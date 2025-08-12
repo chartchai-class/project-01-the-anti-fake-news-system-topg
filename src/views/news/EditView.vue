@@ -2,25 +2,26 @@
 import { toRefs } from 'vue'
 import { useRouter } from 'vue-router'
 import { useMessageStore } from '@/stores/message'
-import { type Event } from '@/types'
+import { type News } from '@/types'
 
 const props = defineProps<{
-  event: Event
+  news: News
   id: string
 }>()
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const { event } = toRefs(props)
+const { news } = toRefs(props)
 const router = useRouter()
 const store = useMessageStore()
+
 const edit = () => {
-  store.updateMessage('Data of ' + props.event.title + ' has been updated.')
+  store.updateMessage('Data of ' + props.news.topic + ' has been updated.')
   setTimeout(() => {
     store.resetMessage()
   }, 3000)
-  router.push({ name: 'event-detail-view', params: { id: props.event.id } })
+  router.push({ name: 'news-detail-view', params: { id: props.news.id } })
 }
 </script>
 <template>
-  <p>Edit event here</p>
+  <p>Edit news here</p>
   <button @click="edit" class="btn-primary">Edit</button>
 </template>
