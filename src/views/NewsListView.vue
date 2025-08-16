@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import NewsCard from '@/components/NewsCard.vue'
 import { type News } from '@/types'
-import { ref, onMounted, computed, watchEffect } from 'vue'
+import { ref, computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import NewsService from '@/services/NewsService'
 
@@ -30,31 +30,55 @@ function changeSize() {
     query: {
       page: 1,
       size: selectedSize.value,
+      status: selectedType.value,
     },
   })
 }
 
+//News type selector
+const selectedType = ref((router.currentRoute.value.query.status as string) || 'all') //const selectedType = ref('all')
+
+//Page size selector
 const hasNextPage = computed(() => {
   const totalPages = Math.ceil(totalNews.value / selectedSize.value)
   return page.value < totalPages
 })
 
-onMounted(() => {
-  watchEffect(() => {
-    NewsService.getNews(selectedSize.value, page.value)
-      .then((response) => {
-        newsList.value = response.data
-        totalNews.value = parseInt(response.headers['x-total-count'])
-      })
-      .catch((error) => {
-        console.error('There was an error fetching news!', error)
-      })
-  })
+watchEffect(() => {
+  NewsService.getNews(selectedSize.value, page.value, selectedType.value)
+    .then((response) => {
+      newsList.value = response.data
+      totalNews.value = parseInt(response.headers['x-total-count'])
+    })
+    .catch((error) => {
+      console.error('There was an error fetching news!', error)
+    })
 })
 </script>
 
 <template>
   <h1 class="text-4xl mb-8">Latest News</h1>
+
+  <!-- News Status Selector -->
+  <div class="mb-4">
+    <label for="status" class="mr-2 text-base font-medium text-gray-700">News type:</label>
+    <select
+      id="status"
+      v-model="selectedType"
+      @change="
+        router.push({
+          name: 'news-list-view',
+          query: { page: 1, size: selectedSize, status: selectedType },
+        })
+      "
+      class="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      <option value="all">All news</option>
+      <option value="True">True news</option>
+      <option value="False">Fake news</option>
+      <option value="Pending">Pending news</option>
+    </select>
+  </div>
 
   <!-- Size selector -->
   <div class="mb-4">
@@ -68,16 +92,24 @@ onMounted(() => {
       <option :value="2">2</option>
       <option :value="3">3</option>
       <option :value="5">5</option>
+      <option :value="10">10</option>
     </select>
   </div>
 
   <div class="flex flex-col items-center gap-4">
-    <NewsCard v-for="news in newsList" :key="news.id" :news="news" />
+    <!-- Horizontal news cards -->
+    <div class="flex flex-wrap gap-4 justify-center">
+      <NewsCard v-for="news in newsList" :key="news.id" :news="news" />
+    </div>
 
-    <div class="flex justify-between w-[290px] text-base">
+    <!-- Pagination links below -->
+    <div class="flex justify-between w-[290px] text-base mt-4">
       <RouterLink
         id="page-prev"
-        :to="{ name: 'news-list-view', query: { page: page - 1, size: selectedSize } }"
+        :to="{
+          name: 'news-list-view',
+          query: { page: page - 1, size: selectedSize, status: selectedType },
+        }"
         rel="prev"
         class="flex-1 text-left no-underline text-[#2c3e50] font-medium hover:underline"
         v-if="page != 1"
@@ -87,7 +119,10 @@ onMounted(() => {
 
       <RouterLink
         id="page-next"
-        :to="{ name: 'news-list-view', query: { page: page + 1, size: selectedSize } }"
+        :to="{
+          name: 'news-list-view',
+          query: { page: page + 1, size: selectedSize, status: selectedType },
+        }"
         rel="next"
         class="flex-1 text-right no-underline text-[#2c3e50] font-medium hover:underline"
         v-if="hasNextPage"

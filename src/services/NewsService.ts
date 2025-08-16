@@ -10,9 +10,14 @@ const apiClient = axios.create({
 })
 
 export default {
-  getNews(perPage: number, page: number) {
-    return apiClient.get('/news?_limit=' + perPage + '&_page=' + page)
+  getNews(perPage: number, page: number, status: string = 'all') {
+    let url = `/news?_limit=${perPage}&_page=${page}`
+    if (status !== 'all') {
+      url += `&status=${status}`
+    }
+    return apiClient.get(url)
   },
+
   getNewsItem(id: number) {
     return apiClient.get('/news/' + id)
   },
