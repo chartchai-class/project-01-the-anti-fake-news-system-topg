@@ -59,7 +59,7 @@ watchEffect(() => {
 <template>
   <h1 class="text-4xl mb-8">Latest News</h1>
 
-  <!-- News Status Selector -->
+  <!-- News Status Selector (All news, true news, fake news, and pending news)-->
   <div class="mb-4">
     <label for="status" class="mr-2 text-base font-medium text-gray-700">News type:</label>
     <select
@@ -80,7 +80,7 @@ watchEffect(() => {
     </select>
   </div>
 
-  <!-- Size selector -->
+  <!-- Size selector (Amount of news shown on page) -->
   <div class="mb-4">
     <label for="size" class="mr-2 text-base font-medium text-gray-700">News per page:</label>
     <select

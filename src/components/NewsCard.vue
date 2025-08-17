@@ -12,7 +12,7 @@ defineProps<{
     :to="{ name: 'news-detail-view', params: { id: news.id } }"
   >
     <div
-      class="cursor-pointer border border-gray-600 p-5 w-[250px] mb-[18px] hover:scale-[1.01] hover:shadow-sp transition-transform duration-200"
+      class="cursor-pointer border border-gray-600 p-5 w-[250px] min-h-[280px] mb-[18px] hover:scale-[1.01] hover:shadow-sp transition-transform duration-200"
     >
       <h2>{{ news.topic }}</h2>
       <p class="text-sm text-gray-400 mb-2">{{ news.short_detail }}</p>
