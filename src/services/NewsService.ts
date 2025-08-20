@@ -1,4 +1,5 @@
 import axios from 'axios'
+import type { News } from '@/types'
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:3000',
@@ -21,4 +22,11 @@ export default {
   getNewsItem(id: number) {
     return apiClient.get('/news/' + id)
   },
+
+  voteNews(id: number, trueVotes: number, falseVotes: number) {
+    return apiClient.patch<News>(`/news/${id}`, {
+      trueVotes,
+      falseVotes
+    })
+  }
 }

@@ -1,0 +1,204 @@
+{
+  "news": [
+    {
+      "id": "1",
+      "topic": "International Peace Summit",
+      "short_detail": "World leaders gathered for a peace summit to discuss conflict resolution strategies.",
+      "trueVotes": 122,
+      "falseVotes": 32,
+      "reporter": "James Smith",
+      "date": "2025-08-10",
+      "time": "19:00:00"
+    },
+    {
+      "id": "2",
+      "topic": "Wildfire in Northern Region",
+      "short_detail": "Firefighters are working around the clock to contain the northern wildfire.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Olivia Brown",
+      "date": "2025-08-13",
+      "time": "23:00:00"
+    },
+    {
+      "id": "3",
+      "topic": "Weather Alert Issued",
+      "short_detail": "Residents were urged to prepare for potential flooding after weather alerts.",
+      "trueVotes": 0,
+      "falseVotes": 1,
+      "reporter": "Emma Wilson",
+      "date": "2025-08-12",
+      "time": "07:00:00"
+    },
+    {
+      "id": "4",
+      "topic": "Celebrity Charity Event",
+      "short_detail": "Stars came together at a charity event to support education initiatives.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Maria Lopez",
+      "date": "2025-08-13",
+      "time": "00:00:00"
+    },
+    {
+      "id": "5",
+      "topic": "Stock Market Rally",
+      "short_detail": "Markets rallied following positive economic outlook reports.",
+      "trueVotes": 0,
+      "falseVotes": 1,
+      "reporter": "Liam Wong",
+      "date": "2025-08-08",
+      "time": "20:00:00"
+    },
+    {
+      "id": "6",
+      "topic": "Cultural Festival Begins",
+      "short_detail": "The annual cultural festival kicked off with vibrant performances and food stalls.",
+      "trueVotes": 0,
+      "falseVotes": 0,
+      "reporter": "Maria Lopez",
+      "date": "2025-08-15",
+      "time": "04:00:00"
+    },
+    {
+      "id": "7",
+      "topic": "Weather Alert Issued",
+      "short_detail": "Residents were urged to prepare for potential flooding after weather alerts.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Emma Wilson",
+      "date": "2025-08-13",
+      "time": "18:00:00"
+    },
+    {
+      "id": "8",
+      "topic": "Education Reform Bill",
+      "short_detail": "The education reform bill has sparked protests among teachers.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Olivia Brown",
+      "date": "2025-08-16",
+      "time": "09:00:00"
+    },
+    {
+      "id": "9",
+      "topic": "Tourism Boost",
+      "short_detail": "New government policies aim to attract more international tourists.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Alex Johnson",
+      "date": "2025-08-13",
+      "time": "23:00:00"
+    },
+    {
+      "id": "10",
+      "topic": "Global Climate Agreement",
+      "short_detail": "Negotiations at the climate summit ended with a historic accord.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Emma Wilson",
+      "date": "2025-08-11",
+      "time": "09:00:00"
+    },
+    {
+      "id": "11",
+      "topic": "Health Advisory Issued",
+      "short_detail": "Health officials issued an advisory following a sharp rise in seasonal flu cases.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Olivia Brown",
+      "date": "2025-08-11",
+      "time": "13:00:00"
+    },
+    {
+      "id": "12",
+      "topic": "New Public Transportation Line",
+      "short_detail": "The city opened a new metro line aimed at reducing traffic congestion.",
+      "trueVotes": 0,
+      "falseVotes": 1,
+      "reporter": "Maria Lopez",
+      "date": "2025-08-11",
+      "time": "22:00:00"
+    },
+    {
+      "id": "13",
+      "topic": "Health Advisory Issued",
+      "short_detail": "Health officials issued an advisory following a sharp rise in seasonal flu cases.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Sophie Chen",
+      "date": "2025-08-14",
+      "time": "12:00:00"
+    },
+    {
+      "id": "14",
+      "topic": "Wildfire in Northern Region",
+      "short_detail": "The wildfire has burned thousands of acres, threatening nearby towns.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Sophie Chen",
+      "date": "2025-08-14",
+      "time": "05:00:00"
+    },
+    {
+      "id": "15",
+      "topic": "Stock Market Rally",
+      "short_detail": "Markets rallied following positive economic outlook reports.",
+      "trueVotes": 0,
+      "falseVotes": 0,
+      "reporter": "Ethan Carter",
+      "date": "2025-08-14",
+      "time": "01:00:00"
+    },
+    {
+      "id": "16",
+      "topic": "Cultural Festival Begins",
+      "short_detail": "Traditional dances and parades marked the beginning of the cultural festival.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Liam Wong",
+      "date": "2025-08-12",
+      "time": "17:00:00"
+    },
+    {
+      "id": "17",
+      "topic": "Weather Alert Issued",
+      "short_detail": "Residents were urged to prepare for potential flooding after weather alerts.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Sophie Chen",
+      "date": "2025-08-11",
+      "time": "09:00:00"
+    },
+    {
+      "id": "18",
+      "topic": "Education Reform Bill",
+      "short_detail": "Debates continue in parliament over the proposed education reform.",
+      "trueVotes": 0,
+      "falseVotes": 0,
+      "reporter": "James Smith",
+      "date": "2025-08-16",
+      "time": "02:00:00"
+    },
+    {
+      "id": "19",
+      "topic": "Health Advisory Issued",
+      "short_detail": "A health advisory was issued due to poor air quality in urban areas.",
+      "trueVotes": 0,
+      "falseVotes": 0,
+      "reporter": "Olivia Brown",
+      "date": "2025-08-11",
+      "time": "02:00:00"
+    },
+    {
+      "id": "20",
+      "topic": "Political Debate Highlights",
+      "short_detail": "Key moments from the heated political debate have sparked nationwide discussions.",
+      "trueVotes": 1,
+      "falseVotes": 0,
+      "reporter": "Sophie Chen",
+      "date": "2025-08-14",
+      "time": "07:00:00"
+    }
+  ]
+}

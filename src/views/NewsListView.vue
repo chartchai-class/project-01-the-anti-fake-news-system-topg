@@ -131,4 +131,18 @@ watchEffect(() => {
       </RouterLink>
     </div>
   </div>
+  <div class="flex flex-wrap gap-4 justify-center">
+    <div v-for="news in newsList" :key="news.id" class="border p-4 rounded shadow">
+      <h2 class="text-xl font-bold">{{ news.topic }}</h2>
+      <p>{{ news.short_detail }}</p>
+      <p>{{ news.trueVotes }} True | {{ news.falseVotes }} False</p>
+      <p>
+        Verdict:
+        {{ news.trueVotes > news.falseVotes ? "Mostly True" : "Mostly False" }}
+      </p>
+      <RouterLink :to="{ name: 'news-detail-view', params: { id: news.id } }">
+        Read more →
+      </RouterLink>
+    </div>
+  </div>
 </template>

@@ -1,16 +1,56 @@
 <script setup lang="ts">
 import { toRefs, defineProps } from 'vue'
+import NewsService from '@/services/NewsService'
 import { type News } from '@/types'
 
-const props = defineProps<{
-  news: News
-}>()
+const props = defineProps<{ news: News }>()
 const { news } = toRefs(props)
+
+async function vote(isTrue: boolean) {
+  if (!news.value) return
+
+  if (isTrue) {
+    news.value.trueVotes++
+  } else {
+    news.value.falseVotes++
+  }
+
+  try {
+    await NewsService.voteNews(
+      news.value.id,
+      news.value.trueVotes,
+      news.value.falseVotes
+    )
+  } catch (error) {
+    console.error('Vote failed', error)
+  }
+}
 </script>
 
 <template>
-  <p>Status: {{ news.status }}</p>
+  <p>Status: {{ news.trueVotes > news.falseVotes ? "Mostly True" : "Mostly False" }}</p>
   <p>Reported by {{ news.reporter }}</p>
   <p>{{ news.date }} @ {{ news.time }}</p>
   <p>{{ news.short_detail }}</p>
+
+  <!-- Voting -->
+  <div class="mt-4">
+    <button @click="vote(true)" class="px-4 py-2 bg-green-500 text-white rounded mr-2">
+      Vote True
+    </button>
+    <button @click="vote(false)" class="px-4 py-2 bg-red-500 text-white rounded">
+      Vote False
+    </button>
+  </div>
+
+  <!-- Tally -->
+  <p class="mt-4">True Votes: {{ news.trueVotes }}</p>
+  <p>False Votes: {{ news.falseVotes }}</p>
+  <p>
+    Verdict:
+    <strong>
+      {{ news.trueVotes > news.falseVotes ? "Mostly True" : "Mostly False" }}
+    </strong>
+  </p>
 </template>
+
