@@ -24,7 +24,7 @@ const { news } = storeToRefs(store)
         exact-active-class="text-green-500"
         :to="{ name: 'news-register-view' }"
       >
-        Register
+        Vote
       </RouterLink>
       |
       <RouterLink
