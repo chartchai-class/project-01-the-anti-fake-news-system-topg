@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router'
 import NewsService from '@/services/NewsService'
 
 const newsList = ref<News[] | null>(null)
-const totalNews = ref(0)
 
 const props = defineProps({
   page: {
@@ -35,31 +34,56 @@ function changeSize() {
   })
 }
 
-//News type selector
-const selectedType = ref((router.currentRoute.value.query.status as string) || 'all') //const selectedType = ref('all')
+// News type selector
+const selectedType = ref((router.currentRoute.value.query.status as string) || 'all')
 
-//Page size selector
-const hasNextPage = computed(() => {
-  const totalPages = Math.ceil(totalNews.value / selectedSize.value)
-  return page.value < totalPages
-})
-
+// Fetch ALL news once (no pagination on backend)
 watchEffect(() => {
-  NewsService.getNews(selectedSize.value, page.value, selectedType.value)
+  NewsService.getNews(9999, 1) // fetch a big number to get all
     .then((response) => {
       newsList.value = response.data
-      totalNews.value = parseInt(response.headers['x-total-count'])
     })
     .catch((error) => {
       console.error('There was an error fetching news!', error)
     })
 })
-</script>
 
+// ✅ Step 1: Filter based on votes
+const filteredNews = computed(() => {
+  if (!newsList.value) return []
+
+  switch (selectedType.value) {
+    case 'True':
+      return newsList.value.filter((n) => n.trueVotes > n.falseVotes)
+
+    case 'False':
+      return newsList.value.filter((n) => n.falseVotes > n.trueVotes)
+
+    case 'Pending':
+      return newsList.value.filter((n) => n.trueVotes === n.falseVotes)
+
+    default:
+      return newsList.value
+  }
+})
+
+// ✅ Step 2: Paginate after filtering
+const paginatedNews = computed(() => {
+  if (!filteredNews.value) return []
+  const start = (page.value - 1) * selectedSize.value
+  const end = start + selectedSize.value
+  return filteredNews.value.slice(start, end)
+})
+
+const hasNextPage = computed(() => {
+  const totalPages = Math.ceil(filteredNews.value.length / selectedSize.value)
+  return page.value < totalPages
+})
+</script>
 <template>
   <h1 class="text-4xl mb-8">Latest News</h1>
 
-  <!-- News Status Selector (All news, true news, fake news, and pending news)-->
+  <!-- News Status Selector -->
   <div class="mb-4">
     <label for="status" class="mr-2 text-base font-medium text-gray-700">News type:</label>
     <select
@@ -80,7 +104,7 @@ watchEffect(() => {
     </select>
   </div>
 
-  <!-- Size selector (Amount of news shown on page) -->
+  <!-- Size selector -->
   <div class="mb-4">
     <label for="size" class="mr-2 text-base font-medium text-gray-700">News per page:</label>
     <select
@@ -99,10 +123,11 @@ watchEffect(() => {
   <div class="flex flex-col items-center gap-4">
     <!-- Horizontal news cards -->
     <div class="flex flex-wrap gap-4 justify-center">
-      <NewsCard v-for="news in newsList" :key="news.id" :news="news" />
+      <!-- ✅ Use paginatedNews -->
+      <NewsCard v-for="news in paginatedNews" :key="news.id" :news="news" />
     </div>
 
-    <!-- Pagination links below -->
+    <!-- Pagination -->
     <div class="flex justify-between w-[290px] text-base mt-4">
       <RouterLink
         id="page-prev"
@@ -131,14 +156,16 @@ watchEffect(() => {
       </RouterLink>
     </div>
   </div>
+
+  <!-- ✅ Also use paginatedNews here -->
   <div class="flex flex-wrap gap-4 justify-center">
-    <div v-for="news in newsList" :key="news.id" class="border p-4 rounded shadow">
+    <div v-for="news in paginatedNews" :key="news.id" class="border p-4 rounded shadow">
       <h2 class="text-xl font-bold">{{ news.topic }}</h2>
       <p>{{ news.short_detail }}</p>
       <p>{{ news.trueVotes }} True | {{ news.falseVotes }} False</p>
       <p>
         Verdict:
-        {{ news.trueVotes > news.falseVotes ? "Mostly True" : "Mostly False" }}
+        {{ news.trueVotes > news.falseVotes ? "Mostly True" : news.falseVotes > news.trueVotes ? "Mostly False" : "Pending" }}
       </p>
       <RouterLink :to="{ name: 'news-detail-view', params: { id: news.id } }">
         Read more →
