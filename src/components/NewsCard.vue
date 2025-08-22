@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { type News } from '@/types'
+import { computed } from 'vue'
 
-defineProps<{
+const props = defineProps<{
   news: News
 }>()
+
+// ✅ Compute status based on votes
+const status = computed(() => {
+  if (props.news.trueVotes > props.news.falseVotes) return 'True'
+  if (props.news.falseVotes > props.news.trueVotes) return 'False'
+  return 'Pending'
+})
 </script>
 
 <template>
@@ -20,12 +28,12 @@ defineProps<{
         Status:
         <span
           :class="{
-            'text-green-400': news.status === 'True',
-            'text-red-400': news.status === 'False',
-            'text-yellow-400': news.status === 'Pending',
+            'text-green-400': status === 'True',
+            'text-red-400': status === 'False',
+            'text-yellow-400': status === 'Pending',
           }"
         >
-          {{ news.status }}
+          {{ status }}
         </span>
       </span>
       <span class="block text-sm text-gray-500"> by {{ news.reporter }} </span>
