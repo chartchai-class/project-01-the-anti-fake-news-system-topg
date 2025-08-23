@@ -1,3 +1,11 @@
+export interface Comment {
+  id?: number
+  newsId: number
+  text: string
+  vote: 'true' | 'false'
+  createdAt: string
+}
+
 export interface News {
   id: number
   topic: string
@@ -7,6 +15,7 @@ export interface News {
   reporter: string
   date: string // format: YYYY-MM-DD
   time: string // format: HH:mm:ss
+  comments?: Comment[]
 }
 
 export interface MessageState {

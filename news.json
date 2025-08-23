@@ -1,11 +1,20 @@
 {
+  "comments": [
+    {
+      "id": "cef8",
+      "newsId": "1",
+      "text": "this is the biggest pile of poopy that ive ever seen. i hate peace, and so does my mom. punch a frog and be happy",
+      "vote": "false",
+      "createdAt": "2025-08-23T04:57:32.319Z"
+    }
+  ],
   "news": [
     {
       "id": "1",
       "topic": "International Peace Summit",
       "short_detail": "World leaders gathered for a peace summit to discuss conflict resolution strategies.",
-      "trueVotes": 130,
-      "falseVotes": 39,
+      "trueVotes": 131,
+      "falseVotes": 40,
       "reporter": "James Smith",
       "date": "2025-08-10",
       "time": "19:00:00"
@@ -24,7 +33,7 @@
       "id": "3",
       "topic": "Weather Alert Issued",
       "short_detail": "Residents were urged to prepare for potential flooding after weather alerts.",
-      "trueVotes": 0,
+      "trueVotes": 1,
       "falseVotes": 2,
       "reporter": "Emma Wilson",
       "date": "2025-08-12",
