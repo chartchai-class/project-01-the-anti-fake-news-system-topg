@@ -139,7 +139,7 @@ const hasNextPage = computed(() => {
             query: { page: page - 1, size: selectedSize, status: selectedType },
           }"
           rel="prev"
-          class="hover:underline"
+          class="px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-600 hover:-translate-x-2 transition-all duration-200"
           v-if="page != 1"
         >
           &#60; Prev Page
@@ -152,7 +152,7 @@ const hasNextPage = computed(() => {
             query: { page: page + 1, size: selectedSize, status: selectedType },
           }"
           rel="next"
-          class="hover:underline"
+          class="px-4 py-2 bg-gray-800 text-white rounded-full hover:bg-gray-600 hover:translate-x-2 transition-all duration-200"
           v-if="hasNextPage"
         >
           Next Page &#62;
