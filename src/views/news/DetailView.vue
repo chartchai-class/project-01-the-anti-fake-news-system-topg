@@ -43,9 +43,9 @@ const { news } = defineProps<{ news: News }>()
         {{ news.date }} @ {{ news.time }}
       </div>
 
-      <!-- Short detail -->
+      <!-- Long detail -->
       <p class="text-gray-700 leading-relaxed mb-4">
-        {{ news.short_detail }}
+        {{ news.long_detail }}
       </p>
 
       <!-- Tally -->
