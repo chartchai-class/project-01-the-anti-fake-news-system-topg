@@ -15,12 +15,12 @@ const { message } = storeToRefs(store)
         <h4>{{ message }}</h4>
       </div>
       <div class="max-w-4xl mx-auto px-4">
-        <nav class="py-6">
+        <nav class="py-2">
           <RouterLink
             class="font-bold text-gray-700"
             exact-active-class="text-green-500"
             :to="{ name: 'news-list-view' }"
-            >News</RouterLink
+            >Anti Fake News</RouterLink
           >
         </nav>
       </div>
