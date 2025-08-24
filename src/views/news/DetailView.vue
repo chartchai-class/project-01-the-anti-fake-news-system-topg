@@ -1,56 +1,68 @@
 <script setup lang="ts">
-import { toRefs, defineProps } from 'vue'
-//import NewsService from '@/services/NewsService'
+import { defineProps } from 'vue'
 import { type News } from '@/types'
 
-const props = defineProps<{ news: News }>()
-const { news } = toRefs(props)
-
-//async function vote(isTrue: boolean) {
-//  if (!news.value) return
-
-//  if (isTrue) {
-//    news.value.trueVotes++
-//  } else {
-//    news.value.falseVotes++
-//  }
-
-//  try {
-//    await NewsService.voteNews(
-//      news.value.id,
-//      news.value.trueVotes,
-//      news.value.falseVotes
-//    )
-//  } catch (error) {
-//    console.error('Vote failed', error)
-//  }
-//}
+// ✅ Props typing (clean, no TS errors)
+const { news } = defineProps<{ news: News }>()
 </script>
 
 <template>
-  <p>Status: {{ news.trueVotes > news.falseVotes ? "Mostly True" : "Mostly False" }}</p>
-  <p>Reported by {{ news.reporter }}</p>
-  <p>{{ news.date }} @ {{ news.time }}</p>
-  <p>{{ news.short_detail }}</p>
+  <!-- Center wrapper -->
+  <div class="flex justify-center items-start py-6">
+    <!-- Card -->
+    <div class="max-w-md w-full bg-white shadow-md rounded-2xl p-6 border border-gray-200 mx-auto">
+      
+      <!-- Status -->
+      <p
+        class="text-sm font-semibold mb-2"
+        :class="{
+          'text-green-600': news.trueVotes > news.falseVotes,
+          'text-red-600': news.falseVotes > news.trueVotes,
+          'text-gray-500': news.trueVotes === news.falseVotes
+        }"
+      >
+        Status:
+        {{ news.trueVotes > news.falseVotes ? "Mostly True" : news.falseVotes > news.trueVotes ? "Mostly False" : "Pending" }}
+      </p>
 
-  <!-- Voting -->
-  <!--<div class="mt-4">
-    <button @click="vote(true)" class="px-4 py-2 bg-green-500 text-white rounded mr-2">
-      Vote True
-    </button>
-    <button @click="vote(false)" class="px-4 py-2 bg-red-500 text-white rounded">
-      Vote False
-    </button>
-  </div>-->
+      <!-- Title -->
+      <h2 class="text-xl font-bold text-gray-800 mb-2">
+        {{ news.topic }}
+      </h2>
 
-  <!-- Tally -->
-  <p class="mt-4">True Votes: {{ news.trueVotes }}</p>
-  <p>False Votes: {{ news.falseVotes }}</p>
-  <p>
-    Verdict:
-    <strong>
-      {{ news.trueVotes > news.falseVotes ? "Mostly True" : "Mostly False" }}
-    </strong>
-  </p>
+      <!-- Reporter & Date -->
+      <div class="text-sm text-gray-500 mb-4">
+        Reported by <span class="font-medium">{{ news.reporter }}</span> <br />
+        {{ news.date }} @ {{ news.time }}
+      </div>
+
+      <!-- Short detail -->
+      <p class="text-gray-700 leading-relaxed mb-4">
+        {{ news.short_detail }}
+      </p>
+
+      <!-- Tally -->
+      <div class="bg-gray-50 rounded-lg p-3 text-sm">
+        <p class="text-green-700">
+          True Votes: <strong>{{ news.trueVotes }}</strong>
+        </p>
+        <p class="text-red-700">
+          False Votes: <strong>{{ news.falseVotes }}</strong>
+        </p>
+        <p class="mt-2">
+          Verdict:
+          <span
+            class="font-bold"
+            :class="{
+              'text-green-600': news.trueVotes > news.falseVotes,
+              'text-red-600': news.falseVotes > news.trueVotes,
+              'text-gray-600': news.trueVotes === news.falseVotes
+            }"
+          >
+            {{ news.trueVotes > news.falseVotes ? "Mostly True" : news.falseVotes > news.trueVotes ? "Mostly False" : "Pending" }}
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
 </template>
-

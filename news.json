@@ -6,6 +6,13 @@
       "text": "this is the biggest pile of poopy that ive ever seen. i hate peace, and so does my mom. punch a frog and be happy",
       "vote": "false",
       "createdAt": "2025-08-23T04:57:32.319Z"
+    },
+    {
+      "id": "bf81",
+      "newsId": "1",
+      "text": "very poopy",
+      "vote": "false",
+      "createdAt": "2025-08-24T06:22:26.180Z"
     }
   ],
   "news": [
@@ -14,7 +21,7 @@
       "topic": "International Peace Summit",
       "short_detail": "World leaders gathered for a peace summit to discuss conflict resolution strategies.",
       "trueVotes": 131,
-      "falseVotes": 40,
+      "falseVotes": 41,
       "reporter": "James Smith",
       "date": "2025-08-10",
       "time": "19:00:00"
