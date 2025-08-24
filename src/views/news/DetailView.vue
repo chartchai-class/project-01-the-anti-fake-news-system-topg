@@ -11,7 +11,14 @@ const { news } = defineProps<{ news: News }>()
   <div class="flex justify-center items-start py-6">
     <!-- Card -->
     <div class="max-w-md w-full bg-white shadow-md rounded-2xl p-6 border border-gray-200 mx-auto">
-      
+      <div class="mb-4">
+        <img
+          v-if="news.imageUrl"
+          :src="news.imageUrl"
+          alt="News Image"
+          class="w-full rounded-xl shadow-md max-h-96 object-cover"
+        />
+      </div>
       <!-- Status -->
       <p
         class="text-sm font-semibold mb-2"
@@ -63,6 +70,7 @@ const { news } = defineProps<{ news: News }>()
           </span>
         </p>
       </div>
+
     </div>
   </div>
 </template>

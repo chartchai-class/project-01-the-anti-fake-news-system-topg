@@ -12,6 +12,10 @@ const filter = ref<'all' | 'true' | 'false'>('all')
 const votedKey = computed(() => `voted:${news.value?.id}`)
 const hasVoted = ref(false)
 
+// const commentImageUrl = ref('')
+
+const selectedFile = ref<File | null>(null)
+
 onMounted(() => {
   hasVoted.value = localStorage.getItem(votedKey.value) === '1'
   if (!news.value?.comments) news.value!.comments = []
@@ -23,14 +27,28 @@ const filteredComments = computed(() => {
   return news.value.comments.filter(c => c.vote === filter.value)
 })
 
+async function uploadImage(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file) // produces "data:image/png;base64,..."
+  })
+}
+
 async function submitComment(vote: 'true' | 'false') {
-  if (!news.value) return
-  if (!commentText.value.trim() || hasVoted.value) return
+  if (!news.value || hasVoted.value || !commentText.value.trim()) return
+
+  let imageUrl: string | undefined
+  if (selectedFile.value) {
+    imageUrl = await uploadImage(selectedFile.value)
+  }
 
   const res = await NewsService.addComment({
     newsId: news.value.id,
     text: commentText.value.trim(),
-    vote
+    vote,
+    imageUrl
   })
 
   news.value.comments!.unshift(res.data)
@@ -42,6 +60,14 @@ async function submitComment(vote: 'true' | 'false') {
   localStorage.setItem(votedKey.value, '1')
   hasVoted.value = true
   commentText.value = ''
+  selectedFile.value = null
+}
+
+function onFileSelected(event: Event) {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files[0]) {
+    selectedFile.value = target.files[0]
+  }
 }
 </script>
 
@@ -55,7 +81,14 @@ async function submitComment(vote: 'true' | 'false') {
       v-model="commentText"
       placeholder="Add your comment..."
       rows="3"
-      class="w-full border border-gray-300 rounded-lg p-3 mb-4 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      class="w-full border border-gray-300 rounded-lg p-3 mb-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    />
+
+    <input
+      type="file"
+      accept="image/*"
+      @change="onFileSelected"
+      class="mb-4"
     />
 
     <!-- Submit buttons -->
@@ -128,6 +161,12 @@ async function submitComment(vote: 'true' | 'false') {
         <!-- Comment content -->
         <div class="flex-1">
           <p class="text-gray-800">{{ c.text }}</p>
+          <img
+            v-if="c.imageUrl"
+            :src="c.imageUrl"
+            alt="Comment image"
+            class="mt-2 max-h-40 rounded-lg object-cover border"
+          />
           <span class="text-xs text-gray-500 mt-1 block">{{ new Date(c.createdAt).toLocaleString() }}</span>
         </div>
       </li>

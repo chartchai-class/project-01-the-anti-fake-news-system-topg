@@ -4,6 +4,7 @@ export interface Comment {
   text: string
   vote: 'true' | 'false'
   createdAt: string
+  imageUrl?: string | null
 }
 
 export interface News {
@@ -16,6 +17,7 @@ export interface News {
   date: string // format: YYYY-MM-DD
   time: string // format: HH:mm:ss
   comments?: Comment[]
+  imageUrl?: string | null
 }
 
 export interface MessageState {
