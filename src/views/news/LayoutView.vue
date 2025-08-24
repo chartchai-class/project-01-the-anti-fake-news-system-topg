@@ -32,7 +32,7 @@ const { news } = storeToRefs(store)
         exact-active-class="text-green-500"
         :to="{ name: 'news-edit-view' }"
       >
-        Edit
+        Comments
       </RouterLink>
     </nav>
 
