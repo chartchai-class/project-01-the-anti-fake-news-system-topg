@@ -80,6 +80,7 @@ const hasNextPage = computed(() => {
   return page.value < totalPages
 })
 </script>
+
 <template>
   <h1 class="text-4xl mb-8">Latest News</h1>
 
@@ -153,22 +154,6 @@ const hasNextPage = computed(() => {
         v-if="hasNextPage"
       >
         Next Page &#62;
-      </RouterLink>
-    </div>
-  </div>
-
-  <!-- ✅ Also use paginatedNews here -->
-  <div class="flex flex-wrap gap-4 justify-center">
-    <div v-for="news in paginatedNews" :key="news.id" class="border p-4 rounded shadow">
-      <h2 class="text-xl font-bold">{{ news.topic }}</h2>
-      <p>{{ news.short_detail }}</p>
-      <p>{{ news.trueVotes }} True | {{ news.falseVotes }} False</p>
-      <p>
-        Verdict:
-        {{ news.trueVotes > news.falseVotes ? "Mostly True" : news.falseVotes > news.trueVotes ? "Mostly False" : "Pending" }}
-      </p>
-      <RouterLink :to="{ name: 'news-detail-view', params: { id: news.id } }">
-        Read more →
       </RouterLink>
     </div>
   </div>
