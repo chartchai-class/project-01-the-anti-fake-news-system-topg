@@ -9,22 +9,27 @@ const { message } = storeToRefs(store)
 
 <template>
   <SpeedInsights />
-  <div class="text-center font-sans text-gray-700 antialias">
+  <div class="min-h-screen bg-[rgb(38,38,40)] font-sans text-gray-300 antialiased">
     <header>
       <div id="flashMessage" class="animate-fade" v-if="message">
         <h4>{{ message }}</h4>
       </div>
-      <div class="max-w-4xl mx-auto px-4">
-        <nav class="py-2">
+
+      <!-- Full-width nav -->
+      <nav class="w-full bg-gray-800 shadow-md">
+        <div class="max-w-4xl mx-auto flex justify-center p-3">
           <RouterLink
-            class="font-bold text-gray-700"
-            exact-active-class="text-green-500"
+            class="font-semibold text-gray-300 hover:text-white transition"
+            exact-active-class="text-green-400 border-b-2 border-green-400 pb-1"
             :to="{ name: 'news-list-view' }"
-            >Anti Fake News</RouterLink
           >
-        </nav>
-      </div>
+            Anti Fake News
+          </RouterLink>
+        </div>
+      </nav>
     </header>
+
     <RouterView />
   </div>
 </template>
+
