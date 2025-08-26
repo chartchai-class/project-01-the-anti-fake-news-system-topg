@@ -22,69 +22,51 @@ const { news } = storeToRefs(store)
       <span class="absolute inset-0 bg-black opacity-20 rounded-lg"></span>
     </h1>
 
-    <nav class="mb-6 flex justify-center gap-6 bg-gray-800 rounded-lg p-3">
+    <!-- Navigation -->
+    <nav
+      class="mb-6 flex flex-wrap justify-center gap-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-xl p-3"
+    >
       <RouterLink
-        class="font-semibold border-b-2 pb-1 transition-all duration-200"
-        :to="{ name: 'news-detail-view' }"
+        class="px-4 py-1.5 text-sm md:text-base rounded-lg border border-gray-600 text-white bg-[rgb(28,28,30)] transition shadow-sm"
         :class="{
-          'text-green-400 border-green-400':
+          'text-emerald-400 border-emerald-400':
             news.trueVotes > news.falseVotes && $route.name === 'news-detail-view',
-          'text-red-400 border-red-400':
+          'text-rose-400 border-rose-400':
             news.falseVotes > news.trueVotes && $route.name === 'news-detail-view',
-          'text-yellow-400 border-yellow-400':
+          'text-amber-400 border-amber-400':
             news.trueVotes === news.falseVotes && $route.name === 'news-detail-view',
-          'text-gray-300 border-transparent': $route.name !== 'news-detail-view',
-          'hover:text-green-400 hover:border-green-400 hover:drop-shadow-[0_0_3px_rgba(0,255,0,0.4)]':
-            news.trueVotes > news.falseVotes && $route.name !== 'news-detail-view',
-          'hover:text-red-400 hover:border-red-400 hover:drop-shadow-[0_0_3px_rgba(255,0,0,0.4)]':
-            news.falseVotes > news.trueVotes && $route.name !== 'news-detail-view',
-          'hover:text-yellow-400 hover:border-yellow-400 hover:drop-shadow-[0_0_3px_rgba(255,255,0,0.4)]':
-            news.trueVotes === news.falseVotes && $route.name !== 'news-detail-view',
         }"
+        :to="{ name: 'news-detail-view' }"
       >
         Details
       </RouterLink>
 
       <RouterLink
-        class="font-semibold border-b-2 pb-1 transition-all duration-200"
-        :to="{ name: 'news-vote-view' }"
+        class="px-4 py-1.5 text-sm md:text-base rounded-lg border border-gray-600 text-white bg-[rgb(28,28,30)] transitionshadow-sm"
         :class="{
-          'text-green-400 border-green-400':
+          'text-emerald-400 border-emerald-400':
             news.trueVotes > news.falseVotes && $route.name === 'news-vote-view',
-          'text-red-400 border-red-400':
+          'text-rose-400 border-rose-400':
             news.falseVotes > news.trueVotes && $route.name === 'news-vote-view',
-          'text-yellow-400 border-yellow-400':
+          'text-amber-400 border-amber-400':
             news.trueVotes === news.falseVotes && $route.name === 'news-vote-view',
-          'text-gray-300 border-transparent': $route.name !== 'news-vote-view',
-          'hover:text-green-400 hover:border-green-400 hover:drop-shadow-[0_0_3px_rgba(0,255,0,0.4)]':
-            news.trueVotes > news.falseVotes && $route.name !== 'news-vote-view',
-          'hover:text-red-400 hover:border-red-400 hover:drop-shadow-[0_0_3px_rgba(255,0,0,0.4)]':
-            news.falseVotes > news.trueVotes && $route.name !== 'news-vote-view',
-          'hover:text-yellow-400 hover:border-yellow-400 hover:drop-shadow-[0_0_3px_rgba(255,255,0,0.4)]':
-            news.trueVotes === news.falseVotes && $route.name !== 'news-vote-view',
         }"
+        :to="{ name: 'news-vote-view' }"
       >
         Vote
       </RouterLink>
 
       <RouterLink
-        class="font-semibold border-b-2 pb-1 transition-all duration-200"
-        :to="{ name: 'news-comment-view' }"
+        class="px-4 py-1.5 text-sm md:text-base rounded-lg border border-gray-600 text-white bg-[rgb(28,28,30)] transition shadow-sm"
         :class="{
-          'text-green-400 border-green-400':
+          'text-emerald-400 border-emerald-400':
             news.trueVotes > news.falseVotes && $route.name === 'news-comment-view',
-          'text-red-400 border-red-400':
+          'text-rose-400 border-rose-400':
             news.falseVotes > news.trueVotes && $route.name === 'news-comment-view',
-          'text-yellow-400 border-yellow-400':
+          'text-amber-400 border-amber-400':
             news.trueVotes === news.falseVotes && $route.name === 'news-comment-view',
-          'text-gray-300 border-transparent': $route.name !== 'news-comment-view',
-          'hover:text-green-400 hover:border-green-400 hover:drop-shadow-[0_0_3px_rgba(0,255,0,0.4)]':
-            news.trueVotes > news.falseVotes && $route.name !== 'news-comment-view',
-          'hover:text-red-400 hover:border-red-400 hover:drop-shadow-[0_0_3px_rgba(255,0,0,0.4)]':
-            news.falseVotes > news.trueVotes && $route.name !== 'news-comment-view',
-          'hover:text-yellow-400 hover:border-yellow-400 hover:drop-shadow-[0_0_3px_rgba(255,255,0,0.4)]':
-            news.trueVotes === news.falseVotes && $route.name !== 'news-comment-view',
         }"
+        :to="{ name: 'news-comment-view' }"
       >
         Comments
       </RouterLink>
