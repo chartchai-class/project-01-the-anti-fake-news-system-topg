@@ -19,8 +19,8 @@ const { message } = storeToRefs(store)
       <nav class="w-full bg-gray-800 shadow-md">
         <div class="max-w-4xl mx-auto flex justify-center p-3">
           <RouterLink
-            class="font-semibold text-gray-300 hover:text-white transition"
-            exact-active-class="text-green-400 border-b-2 border-green-400 pb-1"
+            class="font-semibold text-xl text-gray-300 hover:text-white transition transform hover:scale-105"
+            exact-active-class="text-white"
             :to="{ name: 'news-list-view' }"
           >
             Anti Fake News
@@ -32,4 +32,3 @@ const { message } = storeToRefs(store)
     <RouterView />
   </div>
 </template>
-
