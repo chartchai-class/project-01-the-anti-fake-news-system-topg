@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import NewsListView from '@/views/NewsListView.vue'
 import NewsDetailView from '@/views/news/DetailView.vue'
-import NewsRegisterView from '@/views/news/RegisterView.vue'
-import NewsEditView from '@/views/news/EditView.vue'
+import NewsVoteView from '@/views/news/VoteView.vue'
+import NewsCommentView from '@/views/news/CommentView.vue'
 import NewsLayoutView from '@/views/news/LayoutView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
 import NetworkErrorView from '@/views/NetworkErrorView.vue'
@@ -54,14 +54,14 @@ const router = createRouter({
         },
         {
           path: 'register',
-          name: 'news-register-view',
-          component: NewsRegisterView,
+          name: 'news-vote-view',
+          component: NewsVoteView,
           props: true,
         },
         {
           path: 'edit',
-          name: 'news-edit-view',
-          component: NewsEditView,
+          name: 'news-comment-view',
+          component: NewsCommentView,
           props: true,
         },
       ],
