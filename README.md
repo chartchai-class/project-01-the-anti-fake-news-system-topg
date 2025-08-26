@@ -6,7 +6,7 @@ Levi Thorup SID: 662115509
 Kevin Barnes SID: 662115066
 
 Deployment Link:
-project-01-the-anti-fake-news-syste-kappa.vercel.app
+[project-01-the-anti-fake-news-syste-kappa.vercel.app](https://project-01-the-anti-fake-n-git-7d9384-apisits-projects-d0fae7fc.vercel.app?_vercel_share=iuoyIhQWAchkh9cyKpvrTzDE1wtgQ5uZ)
 
 How to load data (Need to run locally):
 Note: news.json is stored in project-01-the-anti-fake-news-system-topg\news.json
