@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { News, Comment } from '@/types'
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_BACKEND_URL,
   withCredentials: false,
   headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
 })
