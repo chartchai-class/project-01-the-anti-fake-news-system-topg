@@ -87,11 +87,12 @@ const hasNextPage = computed(() => {
     >
       <div class="flex flex-wrap justify-center gap-6 md:gap-8 items-center">
         <!-- Add News button -->
-        <button
-          class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-        >
-          Add News
-        </button>
+          <RouterLink
+            :to="{ name: 'add-news' }"
+            class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+          >
+            Add News
+          </RouterLink>
 
         <!-- Divider -->
         <div class="border-l border-gray-600 h-6 hidden md:block"></div>

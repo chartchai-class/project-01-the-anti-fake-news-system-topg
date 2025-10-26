@@ -20,5 +20,9 @@ export default {
 
   voteNews(id: number, trueVotes: number, falseVotes: number) {
     return apiClient.patch<News>(`/news/${id}`, { trueVotes, falseVotes })
-  }
+  },
+
+  saveNews(news: News) {
+    return apiClient.post<News>('/news', news)
+  },
 }

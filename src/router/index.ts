@@ -9,6 +9,7 @@ import NetworkErrorView from '@/views/NetworkErrorView.vue'
 import nProgress from 'nprogress'
 import NewsService from '@/services/NewsService'
 import { useNewsStore } from '@/stores/News'
+import AddNewsView from '@/views/NewsFormView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,8 +64,13 @@ const router = createRouter({
           name: 'news-comment-view',
           component: NewsCommentView,
           props: true,
-        },
+        }
       ],
+    },
+    {
+      path: '/add-news',
+      name: 'add-news',
+      component: AddNewsView,
     },
     {
       path: '/network-error',
