@@ -10,8 +10,8 @@ export interface Comment {
 export interface News {
   id: number
   topic: string
-  short_detail: string
-  long_detail: string
+  shortDetail: string
+  longDetail: string
   trueVotes: number
   falseVotes: number
   reporter: string

@@ -40,7 +40,7 @@ const { news } = defineProps<{ news: News }>()
     <!-- Long detail -->
     <div class="flex-1 flex flex-col justify-center mb-4">
       <p class="text-gray-300 leading-relaxed sm:leading-loose text-justify text-sm sm:text-base">
-        {{ news.long_detail }}
+        {{ news.longDetail }}
       </p>
     </div>
 
