@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { News, Comment } from '@/types'
+import type { News } from '@/types'
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -14,26 +14,11 @@ export default {
     return apiClient.get<News[]>(url)
   },
 
-  // ⬇️ embed related comments in a single request
   getNewsItem(id: number) {
-    return apiClient.get<News>(`/news/${id}`, { params: { _embed: 'comments' } })
+    return apiClient.get<News>(`/news/${id}`)
   },
 
-  // keep your existing vote update
   voteNews(id: number, trueVotes: number, falseVotes: number) {
     return apiClient.patch<News>(`/news/${id}`, { trueVotes, falseVotes })
-  },
-
-  // comments APIs
-  addComment(payload: Omit<Comment, 'id' | 'createdAt'>) {
-    return apiClient.post<Comment>('/comments', {
-      ...payload,
-      createdAt: new Date().toISOString()
-    })
-  },
-  getCommentsByNews(newsId: number) {
-    return apiClient.get<Comment[]>('/comments', {
-      params: { newsId, _sort: 'id', _order: 'desc' }
-    })
   }
 }

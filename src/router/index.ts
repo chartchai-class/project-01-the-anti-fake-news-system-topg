@@ -53,13 +53,13 @@ const router = createRouter({
           props: true,
         },
         {
-          path: 'register',
+          path: 'vote',
           name: 'news-vote-view',
           component: NewsVoteView,
           props: true,
         },
         {
-          path: 'edit',
+          path: 'comment',
           name: 'news-comment-view',
           component: NewsCommentView,
           props: true,

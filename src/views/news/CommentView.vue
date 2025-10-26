@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, toRefs, onMounted } from 'vue'
-import { type News } from '@/types'
+import { type News, type Comment } from '@/types'
+import CommentService from '@/services/CommentService'
 
 const props = defineProps<{ news: News; id: string }>()
 const { news } = toRefs(props)
@@ -8,16 +9,24 @@ const { news } = toRefs(props)
 const filter = ref<'all' | 'true' | 'false'>('all')
 const votedKey = computed(() => `voted:${news.value?.id}`)
 const hasVoted = ref(false)
+const comments = ref<Comment[]>([])
 
-onMounted(() => {
+onMounted(async () => {
   hasVoted.value = localStorage.getItem(votedKey.value) === '1'
-  if (!news.value?.comments) news.value!.comments = []
+  
+  if (news.value?.id) {
+    try {
+      const response = await CommentService.getCommentsByNews(news.value.id)
+      comments.value = response.data
+    } catch (err) {
+      console.error('Failed to fetch comments:', err)
+    }
+  }
 })
 
 const filteredComments = computed(() => {
-  if (!news.value?.comments) return []
-  if (filter.value === 'all') return news.value.comments
-  return news.value.comments.filter(c => c.vote === filter.value)
+  if (filter.value === 'all') return comments.value
+  return comments.value.filter(c => c.vote === filter.value)
 })
 </script>
 
@@ -81,3 +90,4 @@ const filteredComments = computed(() => {
     </div>
   </div>
 </template>
+
