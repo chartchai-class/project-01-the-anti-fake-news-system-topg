@@ -25,4 +25,10 @@ export default {
   saveNews(news: News) {
     return apiClient.post<News>('/news', news)
   },
+
+  getNewsByKeyword(keyword: string, perPage: number, page: number) {
+    return apiClient.get<News[]>(
+      `/news/search?query=${keyword}&_limit=${perPage}&_page=${page}`
+    )
+  },
 }

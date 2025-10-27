@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import NewsCard from '@/components/NewsCard.vue'
 import { type News } from '@/types'
-import { ref, computed, watchEffect } from 'vue'
+import { onMounted, ref, computed, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import NewsService from '@/services/NewsService'
+import BaseInput from '@/components/BaseInput.vue'
 
 const newsList = ref<News[] | null>(null)
+const totalNews = ref(0)
 
 const props = defineProps({
   page: {
@@ -77,6 +79,32 @@ const hasNextPage = computed(() => {
   const totalPages = Math.ceil(filteredNews.value.length / selectedSize.value)
   return page.value < totalPages
 })
+
+onMounted(() => {
+  watchEffect(() => {
+    updateKeyword()
+  })
+})
+
+const keyword = ref('')
+function updateKeyword(value: string) {
+  let queryFunction
+  if (keyword.value === '') {
+    queryFunction = NewsService.getNews(3, page.value)
+  } else {
+    queryFunction = NewsService.getNewsByKeyword(keyword.value, 3, page.value)
+  }
+  queryFunction
+    .then((response) => {
+      newsList.value = response.data
+      totalNews.value = response.headers['x-total-count']
+      console.log('newsList', newsList.value)
+      console.log('totalNews', totalNews.value)
+    })
+    .catch(() => {
+      router.push({ name: 'NetworkError' })
+    })
+}
 </script>
 
 <template>
@@ -86,13 +114,18 @@ const hasNextPage = computed(() => {
       class="p-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-b-xl"
     >
       <div class="flex flex-wrap justify-center gap-6 md:gap-8 items-center">
-        <!-- Add News button -->
+          <!-- Add News button -->
           <RouterLink
             :to="{ name: 'add-news' }"
             class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
           >
             Add News
           </RouterLink>
+
+        <!-- Search bar -->
+        <div class="w-64">
+          <BaseInput v-model="keyword" label="Search News" @input="updateKeyword" />
+        </div>
 
         <!-- Divider -->
         <div class="border-l border-gray-600 h-6 hidden md:block"></div>
@@ -181,3 +214,5 @@ const hasNextPage = computed(() => {
     </div>
   </div>
 </template>
+
+<!-- "http://localhost:8080/news/search?query=COVID&page=1&size=5" -->
