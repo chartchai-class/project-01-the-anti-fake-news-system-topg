@@ -1,30 +1,66 @@
 <script setup lang="ts">
 import NewsCard from '@/components/NewsCard.vue'
-import { type News } from '@/types'
-import { onMounted, ref, computed, watchEffect } from 'vue'
-import { useRouter } from 'vue-router'
-import NewsService from '@/services/NewsService'
 import BaseInput from '@/components/BaseInput.vue'
-
-const newsList = ref<News[] | null>(null)
-const totalNews = ref(0)
-
-const props = defineProps({
-  page: {
-    type: Number,
-    required: true,
-  },
-  size: {
-    type: Number,
-    required: true,
-  },
-})
-
-const page = computed(() => props.page)
-const selectedSize = ref(props.size)
+import { type News } from '@/types'
+import { ref, computed, watchEffect } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
+import NewsService from '@/services/NewsService'
 
 const router = useRouter()
+const route = useRoute()
 
+// Reactive news data
+const newsList = ref<News[]>([])
+const totalNews = ref(0)
+
+// Props for default page and size
+const props = defineProps({
+  page: { type: Number, required: true },
+  size: { type: Number, required: true },
+})
+
+// Reactive selected page and size from route query
+const page = computed(() => Number(route.query.page) || props.page)
+const selectedSize = ref(props.size)
+
+// News type selector (all, True, False, Pending)
+const selectedType = ref((route.query.status as string) || 'all')
+
+// Keyword search
+const keyword = ref('')
+
+// Fetch news from backend
+function fetchNews() {
+  const statusParam = selectedType.value
+  let queryFunction
+
+  if (keyword.value.trim() === '') {
+    queryFunction = NewsService.getNews(selectedSize.value, page.value, statusParam)
+  } else {
+    queryFunction = NewsService.getNewsByKeyword(
+      keyword.value.trim(),
+      selectedSize.value,
+      page.value,
+      statusParam
+    )
+  }
+
+  queryFunction
+    .then((response) => {
+      newsList.value = response.data
+      totalNews.value = parseInt(response.headers['x-total-count'])
+    })
+    .catch(() => {
+      router.push({ name: 'NetworkError' })
+    })
+}
+
+// Automatically fetch news when page, size, type, or keyword changes
+watchEffect(() => {
+  fetchNews()
+})
+
+// Change page size
 function changeSize() {
   router.push({
     name: 'news-list-view',
@@ -36,95 +72,28 @@ function changeSize() {
   })
 }
 
-//News type selector
-const selectedType = ref((router.currentRoute.value.query.status as string) || 'all')
-
-//Fetch ALL news once (big limit)
-watchEffect(() => {
-  NewsService.getNews(9999, 1)
-    .then((response) => {
-      newsList.value = response.data
-    })
-    .catch((error) => {
-      console.error('There was an error fetching news!', error)
-    })
-})
-
-//Filter based on votes
-const filteredNews = computed(() => {
-  if (!newsList.value) return []
-
-  switch (selectedType.value) {
-    case 'True':
-      return newsList.value.filter((n) => n.trueVotes > n.falseVotes)
-    case 'False':
-      return newsList.value.filter((n) => n.falseVotes > n.trueVotes)
-    case 'Pending':
-      return newsList.value.filter((n) => n.trueVotes === n.falseVotes)
-    default:
-      return newsList.value
-  }
-})
-
-//Paginate after filtering
-const paginatedNews = computed(() => {
-  if (!filteredNews.value) return []
-  const start = (page.value - 1) * selectedSize.value
-  const end = start + selectedSize.value
-  return filteredNews.value.slice(start, end)
-})
-
-//Has next page
+// Pagination
 const hasNextPage = computed(() => {
-  const totalPages = Math.ceil(filteredNews.value.length / selectedSize.value)
-  return page.value < totalPages
+  return page.value * selectedSize.value < totalNews.value
 })
-
-onMounted(() => {
-  watchEffect(() => {
-    updateKeyword()
-  })
-})
-
-const keyword = ref('')
-function updateKeyword(value: string) {
-  let queryFunction
-  if (keyword.value === '') {
-    queryFunction = NewsService.getNews(3, page.value)
-  } else {
-    queryFunction = NewsService.getNewsByKeyword(keyword.value, 3, page.value)
-  }
-  queryFunction
-    .then((response) => {
-      newsList.value = response.data
-      totalNews.value = response.headers['x-total-count']
-      console.log('newsList', newsList.value)
-      console.log('totalNews', totalNews.value)
-    })
-    .catch(() => {
-      router.push({ name: 'NetworkError' })
-    })
-}
 </script>
 
 <template>
   <div class="flex flex-col min-h-screen bg-black text-white">
     <!-- Top controls bar -->
-    <div
-      class="p-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-b-xl"
-    >
+    <div class="p-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-b-xl">
       <div class="flex flex-wrap justify-center gap-6 md:gap-8 items-center">
-          <!-- Add News button -->
-          <RouterLink
-            :to="{ name: 'add-news' }"
-            class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-          >
-            Add News
-          </RouterLink>
+        <!-- Add News button -->
+        <RouterLink
+          :to="{ name: 'add-news' }"
+          class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+        >
+          Add News
+        </RouterLink>
 
         <!-- Search bar -->
         <div class="w-64">
-          <BaseInput v-model="keyword" label="Search News" @input="updateKeyword" />
+          <BaseInput v-model="keyword" label="Search News" @input="fetchNews" />
         </div>
 
         <!-- Divider -->
@@ -132,9 +101,7 @@ function updateKeyword(value: string) {
 
         <!-- News type selector -->
         <div class="flex items-center gap-2">
-          <label for="status" class="text-sm md:text-base font-semibold text-gray-300"
-            >News type:</label
-          >
+          <label for="status" class="text-sm md:text-base font-semibold text-gray-300">News type:</label>
           <select
             id="status"
             v-model="selectedType"
@@ -158,9 +125,7 @@ function updateKeyword(value: string) {
 
         <!-- Page size selector -->
         <div class="flex items-center gap-2">
-          <label for="size" class="text-sm md:text-base font-semibold text-gray-300"
-            >News per page:</label
-          >
+          <label for="size" class="text-sm md:text-base font-semibold text-gray-300">News per page:</label>
           <select
             id="size"
             v-model.number="selectedSize"
@@ -180,7 +145,7 @@ function updateKeyword(value: string) {
     <div class="flex-1 p-6">
       <!-- News cards -->
       <div class="flex flex-wrap justify-center gap-4 mb-6">
-        <NewsCard v-for="news in paginatedNews" :key="news.id" :news="news" />
+        <NewsCard v-for="news in newsList" :key="news.id" :news="news" />
       </div>
 
       <!-- Pagination at bottom -->
@@ -214,5 +179,3 @@ function updateKeyword(value: string) {
     </div>
   </div>
 </template>
-
-<!-- "http://localhost:8080/news/search?query=COVID&page=1&size=5" -->

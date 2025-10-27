@@ -26,9 +26,9 @@ export default {
     return apiClient.post<News>('/news', news)
   },
 
-  getNewsByKeyword(keyword: string, perPage: number, page: number) {
-    return apiClient.get<News[]>(
-      `/news/search?query=${keyword}&_limit=${perPage}&_page=${page}`
-    )
+  getNewsByKeyword(keyword: string, perPage: number, page: number, status: string = 'all') {
+    let url = `/news/search?query=${encodeURIComponent(keyword)}&_limit=${perPage}&_page=${page}`
+    if (status !== 'all') url += `&status=${status}`
+    return apiClient.get<News[]>(url)
   },
 }
