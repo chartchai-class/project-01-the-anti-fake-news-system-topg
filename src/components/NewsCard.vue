@@ -52,7 +52,7 @@ const falsePercentage = computed(() =>
         <!-- Description -->
         <div class="flex-none mt-2 overflow-auto min-h-[60px] text-left">
           <p class="text-base text-white/90 break-words">
-            {{ news.short_detail }}
+            {{ news.shortDetail }}
           </p>
         </div>
 
