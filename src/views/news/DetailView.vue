@@ -15,14 +15,12 @@ const { news } = defineProps<{ news: News }>()
          border border-gray-800 mx-auto flex flex-col lg:flex-row gap-4 sm:gap-6"
 >
   <!-- Left side: Image -->
-  <div class="w-full lg:w-2/5">
-    <img
-      v-if="news.imageUrl"
-      :src="news.imageUrl"
-      alt="News Image"
-      class="w-full h-48 sm:h-60 lg:h-full rounded-xl shadow-md object-cover object-center"
-    />
-  </div>
+   <div class="flex flex-row flex-wrap justify-center">
+
+     <img v-for="image in news.images" :key="image" :src="image" alt="events image"
+       class="border-solid border-gray-200 border-2 rounded p-1 m-1 w-40 hover:shadow-lg" />
+
+   </div>
 
   <!-- Right side: Content -->
   <div class="w-full lg:w-3/5 flex flex-col overflow-y-auto">

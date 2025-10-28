@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import type { News } from '@/types'
 import NewsService from '@/services/NewsService'
 import BaseInput from '@/components/BaseInput.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
 
 // Initialize a new news item
 const news = ref<News>({
@@ -17,7 +18,7 @@ const news = ref<News>({
   date: '',
   time: '',
   comments: [],
-  imageUrl: null
+  images: []
 })
 
 const router = useRouter()
@@ -82,7 +83,9 @@ button:focus { outline: none; }
       <BaseInput v-model="news.reporter" type="text" label="Reporter" />
       <BaseInput v-model="news.date" type="date" label="Date" />
       <BaseInput v-model="news.time" type="time" label="Time" />
-      <ImageUpload v-model="news.imageUrl" />
+      
+      <h3>The image of the Event</h3>
+      <ImageUpload v-model="news.images" />
 
       <button type="submit">Submit</button>
     </form>

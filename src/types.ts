@@ -18,7 +18,7 @@ export interface News {
   date: string // format: YYYY-MM-DD
   time: string // format: HH:mm:ss
   comments?: Comment[]
-  imageUrl?: string | null
+  images: string[]
 }
 
 export interface MessageState {
