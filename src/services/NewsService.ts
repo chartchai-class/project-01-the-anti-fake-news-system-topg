@@ -18,6 +18,7 @@ export default {
     return apiClient.get<News>(`/news/${id}`)
   },
 
+  // This one is for the vote count display, not for voting
   voteNews(id: number, trueVotes: number, falseVotes: number) {
     return apiClient.patch<News>(`/news/${id}`, { trueVotes, falseVotes })
   },

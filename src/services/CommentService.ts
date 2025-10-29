@@ -7,6 +7,9 @@ const apiClient = axios.create({
   headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
 })
 
+// Use this one for the votes as well as the comments
+// since votes are now part of comments.
+// And make sure the backend handles payloads properly
 export default {
   addComment(payload: Omit<Comment, 'id' | 'createdAt'>) {
     return apiClient.post<Comment>('/comments', {
