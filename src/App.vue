@@ -1,14 +1,34 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
 import { useMessageStore } from './stores/message'
+import { useAuthStore } from './stores/auth';
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router';
 import { SpeedInsights } from '@vercel/speed-insights/vue'
 import SvgIcon from '@jamescoyle/vue-icon'
-import { mdiLogin, mdiAccountPlus } from '@mdi/js' // ✅ added both icons
+import { mdiLogin, mdiAccountPlus, mdiAccount, mdiLogout } from '@mdi/js'
 
 const store = useMessageStore()
+const authStore = useAuthStore()
+const router = useRouter()
 const { message } = storeToRefs(store)
+const { currentUserName } = storeToRefs(authStore) // ✅ reactive getter
+
+const token = localStorage.getItem('access_token')
+const user = localStorage.getItem('user')
+
+if (token && user) {
+  authStore.reload(token, JSON.parse(user))  
+} else {
+  authStore.logout()
+}
+
+function logout() {
+  authStore.logout()
+  router.push({ name: 'login' })
+}
 </script>
+
 
 <template>
   <SpeedInsights />
@@ -30,8 +50,8 @@ const { message } = storeToRefs(store)
             Anti Fake News
           </RouterLink>
 
-          <!-- Right: Auth Links -->
-          <ul class="flex items-center space-x-4">
+          <!-- ✅ Show when NOT logged in -->
+          <ul v-if="!authStore.currentUserName" class="flex navbar-nav ml-auto">
             <li>
               <RouterLink
                 to="/register"
@@ -51,6 +71,28 @@ const { message } = storeToRefs(store)
               </RouterLink>
             </li>
           </ul>
+
+          <!-- Show when LOGGED IN -->
+<ul v-if="currentUserName" class="flex navbar-nav ml-auto">
+  <li class="nav-item px-2">
+    <RouterLink
+      to="/profile"
+      class="nav-link flex items-center text-gray-300 hover:text-white transition"
+    >
+      <SvgIcon type="mdi" :path="mdiAccount" />
+      <span class="ml-3">{{ currentUserName }}</span>
+    </RouterLink>
+  </li>
+  <li class="nav-item px-2">
+    <a
+      class="nav-link hover:cursor-pointer flex items-center text-gray-300 hover:text-white transition"
+      @click="logout"
+    >
+      <SvgIcon type="mdi" :path="mdiLogout" />
+      <span class="ml-3">Log Out</span>
+    </a>
+  </li>
+</ul>
         </div>
       </nav>
     </header>
