@@ -8,17 +8,17 @@ export interface Comment {
 }
 
 export interface News {
-  id: number
+  id: number | null
   topic: string
-  short_detail: string
-  long_detail: string
+  shortDetail: string
+  longDetail: string
   trueVotes: number
   falseVotes: number
   reporter: string
   date: string // format: YYYY-MM-DD
   time: string // format: HH:mm:ss
   comments?: Comment[]
-  imageUrl?: string | null
+  images: string[]
 }
 
 export interface MessageState {
@@ -27,4 +27,12 @@ export interface MessageState {
 
 export interface NewsState {
   news: News | null
+}
+
+export interface Reporter{
+
+ id: number | null
+ name: string
+ roles: string[]
+
 }

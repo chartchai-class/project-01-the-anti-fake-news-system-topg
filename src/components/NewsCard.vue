@@ -36,10 +36,19 @@ const falsePercentage = computed(() =>
           status === 'Pending',
       }"
     >
-      <!-- News Image -->
-      <div v-if="props.news.imageUrl" class="w-full h-[180px] overflow-hidden rounded-t-2xl">
-        <img :src="props.news.imageUrl" alt="news image" class="w-full h-full object-cover" />
-      </div>
+    <!-- News Image -->
+    <div
+      v-if="news.images && news.images.length > 0"
+      class="w-full overflow-hidden rounded-t-2xl"
+    >
+      <img
+        v-for="image in news.images"
+        :key="image"
+        :src="image"
+        alt="news image"
+        class="w-full h-[180px] object-cover"
+      />
+    </div>
 
       <div class="p-4 flex flex-col justify-between flex-1">
         <!-- Title -->
@@ -52,7 +61,7 @@ const falsePercentage = computed(() =>
         <!-- Description -->
         <div class="flex-none mt-2 overflow-auto min-h-[60px] text-left">
           <p class="text-base text-white/90 break-words">
-            {{ news.short_detail }}
+            {{ news.shortDetail }}
           </p>
         </div>
 

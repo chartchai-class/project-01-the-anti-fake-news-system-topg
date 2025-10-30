@@ -2,6 +2,7 @@
 import { ref, computed, toRefs, onMounted } from 'vue'
 import { type News } from '@/types'
 import NewsService from '@/services/NewsService'
+import CommentService from '@/services/CommentService'
 
 const props = defineProps<{ news: News; id: string }>()
 const { news } = toRefs(props)
@@ -41,7 +42,7 @@ async function submitComment(vote: 'true' | 'false') {
     imageUrl = await uploadImage(selectedFile.value)
   }
 
-  const res = await NewsService.addComment({
+  const res = await CommentService.addComment({
     newsId: news.value.id,
     text: commentText.value.trim(),
     vote,
@@ -71,10 +72,8 @@ function onFileSelected(event: Event) {
 <template>
   <div class="min-h-screen bg-[rgb(38,38,40)] flex justify-center items-start py-6">
     <div class="w-[80%] max-w-4xl bg-gray-900 shadow-md rounded-2xl p-6 border border-gray-800">
-      
       <!-- Header -->
       <h2 class="text-xl font-bold text-white mb-4">Comment & Vote</h2>
-
       <!-- Comment input -->
       <textarea
         v-model="commentText"
@@ -82,14 +81,12 @@ function onFileSelected(event: Event) {
         rows="3"
         class="w-full border border-gray-700 rounded-lg p-3 mb-2 bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
       />
-
       <input
         type="file"
         accept="image/*"
         @change="onFileSelected"
         class="mb-4 text-gray-200"
       />
-
       <!-- Submit buttons -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4">
         <button
@@ -108,7 +105,6 @@ function onFileSelected(event: Event) {
         </button>
         <span v-if="hasVoted" class="text-sm text-gray-400 mt-2 sm:mt-0">You’ve already voted on this news.</span>
       </div>
-
       <!-- Vote tally -->
 <div class="bg-gray-800 rounded-lg p-4 text-sm mb-6">
   <p class="text-green-400 font-semibold">True Votes: {{ news.trueVotes }}</p>
@@ -123,8 +119,6 @@ function onFileSelected(event: Event) {
     </span>
   </p>
 </div>
-
-
       <!-- Filter buttons -->
       <div class="flex gap-2 mb-4">
         <button
@@ -149,7 +143,6 @@ function onFileSelected(event: Event) {
           False
         </button>
       </div>
-
       <!-- Comment list -->
       <ul class="space-y-3">
         <li v-for="c in filteredComments" :key="c.id" class="flex items-start gap-3 border-b border-gray-700 pb-3">

@@ -1,11 +1,5 @@
-import axios from 'axios'
-import type { News, Comment } from '@/types'
-
-const apiClient = axios.create({
-  baseURL: 'http://localhost:3000',
-  withCredentials: false,
-  headers: { Accept: 'application/json', 'Content-Type': 'application/json' }
-})
+import apiClient from './AxiosClient'
+import type { News } from '@/types'
 
 export default {
   getNews(perPage: number, page: number, status: string = 'all') {
@@ -14,26 +8,22 @@ export default {
     return apiClient.get<News[]>(url)
   },
 
-  // ⬇️ embed related comments in a single request
   getNewsItem(id: number) {
-    return apiClient.get<News>(`/news/${id}`, { params: { _embed: 'comments' } })
+    return apiClient.get<News>(`/news/${id}`)
   },
 
-  // keep your existing vote update
+  // This one is for the vote count display, not for voting
   voteNews(id: number, trueVotes: number, falseVotes: number) {
     return apiClient.patch<News>(`/news/${id}`, { trueVotes, falseVotes })
   },
 
-  // comments APIs
-  addComment(payload: Omit<Comment, 'id' | 'createdAt'>) {
-    return apiClient.post<Comment>('/comments', {
-      ...payload,
-      createdAt: new Date().toISOString()
-    })
+  saveNews(news: News) {
+    return apiClient.post<News>('/news', news)
   },
-  getCommentsByNews(newsId: number) {
-    return apiClient.get<Comment[]>('/comments', {
-      params: { newsId, _sort: 'id', _order: 'desc' }
-    })
-  }
+
+  getNewsByKeyword(keyword: string, perPage: number, page: number, status: string = 'all') {
+    let url = `/news/search?query=${encodeURIComponent(keyword)}&_limit=${perPage}&_page=${page}`
+    if (status !== 'all') url += `&status=${status}`
+    return apiClient.get<News[]>(url)
+  },
 }
