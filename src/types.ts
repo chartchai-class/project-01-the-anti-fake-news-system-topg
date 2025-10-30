@@ -28,3 +28,11 @@ export interface MessageState {
 export interface NewsState {
   news: News | null
 }
+
+export interface Reporter{
+
+ id: number | null
+ name: string
+ roles: string[]
+
+}
