@@ -41,7 +41,7 @@ export const useAuthStore = defineStore('auth', {
         })
     },
 
-    register(firstname: string, lastname: string, username: string,email: string, password: string) {
+    register(firstname: string, lastname: string, username: string, email: string, password: string) {
       return apiClient
         .post('/api/v1/auth/register', {
           firstname,
@@ -51,13 +51,9 @@ export const useAuthStore = defineStore('auth', {
           password,
         })
         .then((response) => {
-          this.token = response.data.accessToken;
-          this.user = response.data.user;
-          localStorage.setItem('access_token', this.token as string);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
-          localStorage.setItem('user', JSON.stringify(this.user));
-          return response;
-        });
+          // Registration succeeded; just return backend message
+          return response.data
+        })
     },
 
     logout() {
