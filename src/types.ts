@@ -1,3 +1,5 @@
+// types.ts
+
 export interface Comment {
   id?: number
   newsId: number
@@ -14,7 +16,7 @@ export interface News {
   longDetail: string
   trueVotes: number
   falseVotes: number
-  reporter: string
+  reporterName: string
   date: string // format: YYYY-MM-DD
   time: string // format: HH:mm:ss
   comments?: Comment[]

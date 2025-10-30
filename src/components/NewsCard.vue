@@ -106,7 +106,7 @@ const falsePercentage = computed(() =>
         <!-- Reporter and Date/Time -->
         <div class="flex justify-between items-center mt-3">
           <div class="text-lg font-semibold text-white">
-            {{ news.reporter }}
+            {{ news.reporterName }}
           </div>
           <div class="text-sm text-white/70">{{ news.date }} @ {{ news.time }}</div>
         </div>

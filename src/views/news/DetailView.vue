@@ -31,7 +31,7 @@ const { news } = defineProps<{ news: News }>()
 
     <!-- Reporter & Date -->
     <div class="text-xs sm:text-sm text-gray-400 mb-2">
-      Reported by <span class="font-medium text-gray-200">{{ news.reporter }}</span> <br />
+      Reported by <span class="font-medium text-gray-200">{{ news.reporterName }}</span> <br />
       {{ news.date }} @ {{ news.time }}
     </div>
 
