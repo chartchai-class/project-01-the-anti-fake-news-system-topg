@@ -10,7 +10,7 @@ import nProgress from 'nprogress'
 import NewsService from '@/services/NewsService'
 import { useNewsStore } from '@/stores/News'
 import AddNewsView from '@/views/NewsFormView.vue'
-
+import LoginView from '@/views/LoginView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -22,8 +22,21 @@ const router = createRouter({
         page: parseInt(route.query.page?.toString() || '1'),
         size: parseInt(route.query.size?.toString() || '3'),
       }),
-    },
-    {
+     },
+
+   {
+
+     path: '/login',
+     name: 'login',
+     component: LoginView
+
+   },
+   {
+      path: '/register',
+      name: 'register-view',
+      component: () => import('@/views/RegisterView.vue')
+   },
+   {
       path: '/news/:id',
       name: 'news-layout-view',
       component: NewsLayoutView,
