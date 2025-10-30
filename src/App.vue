@@ -72,8 +72,19 @@ function logout() {
             </li>
           </ul>
 
-          <!-- Show when LOGGED IN -->
-<ul v-if="currentUserName" class="flex navbar-nav ml-auto">
+<!-- Show when LOGGED IN -->
+<ul v-if="currentUserName" class="flex navbar-nav ml-auto items-center">
+  <!-- Admin Panel Button -->
+  <li v-if="authStore.isAdmin" class="nav-item px-2">
+    <RouterLink
+      to="/admin/users"
+      class="nav-link flex items-center text-gray-300 hover:text-white transition"
+    >
+      <span class="ml-1 font-semibold">Admin Panel</span>
+    </RouterLink>
+  </li>
+
+  <!-- User Profile -->
   <li class="nav-item px-2">
     <RouterLink
       to="/profile"
@@ -83,6 +94,8 @@ function logout() {
       <span class="ml-3">{{ currentUserName }}</span>
     </RouterLink>
   </li>
+
+  <!-- Logout -->
   <li class="nav-item px-2">
     <a
       class="nav-link hover:cursor-pointer flex items-center text-gray-300 hover:text-white transition"
@@ -93,6 +106,7 @@ function logout() {
     </a>
   </li>
 </ul>
+
         </div>
       </nav>
     </header>

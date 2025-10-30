@@ -11,6 +11,7 @@ import NewsService from '@/services/NewsService'
 import { useNewsStore } from '@/stores/News'
 import AddNewsView from '@/views/NewsFormView.vue'
 import LoginView from '@/views/LoginView.vue'
+import AdminUsersView from '@/views/AdminUsers.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -100,6 +101,11 @@ const router = createRouter({
       path: '/:catchAll(.*)',
       name: 'not-found',
       component: NotFoundView,
+    },
+    {
+      path: '/admin/users',
+      name: 'admin-users',
+      component: AdminUsersView,
     },
   ],
   scrollBehavior(to, from, savedPosition) {
