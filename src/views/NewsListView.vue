@@ -5,10 +5,10 @@ import { type News } from '@/types'
 import { ref, computed, watchEffect } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import NewsService from '@/services/NewsService'
-
+import { useAuthStore } from '@/stores/auth';
 const router = useRouter()
 const route = useRoute()
-
+const authStore = useAuthStore()
 // Reactive news data
 const newsList = ref<News[]>([])
 const totalNews = ref(0)
@@ -83,6 +83,7 @@ const hasNextPage = computed(() => {
     <!-- Top controls bar -->
     <div class="p-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-b-xl">
       <div class="flex flex-wrap justify-center gap-6 md:gap-8 items-center">
+      <span v-if="authStore.isAdmin || authStore.isReporter">
         <!-- Add News button -->
         <RouterLink
           :to="{ name: 'add-news' }"
@@ -90,7 +91,7 @@ const hasNextPage = computed(() => {
         >
           Add News
         </RouterLink>
-
+      </span>
         <!-- Search bar -->
         <div class="w-64">
           <BaseInput v-model="keyword" label="Search News" @input="fetchNews" />
