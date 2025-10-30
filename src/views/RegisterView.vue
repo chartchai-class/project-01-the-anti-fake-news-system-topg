@@ -10,15 +10,11 @@ const authStore = useAuthStore()
 const messageStore = useMessageStore()
 const router = useRouter()
 
-// Validation schema
+// ✅ Validation schema includes username
 const validationSchema = yup.object({
   firstname: yup.string().required('First name is required'),
   lastname: yup.string().required('Last name is required'),
-  username: yup
-    .string()
-    .required('Username is required')
-    .min(3, 'At least 3 characters')
-    .max(20, 'Maximum 20 characters'),
+  username: yup.string().required('Username is required'),
   email: yup.string().required('Email is required').email('Must be a valid email'),
   password: yup.string().required('Password is required').min(6, 'At least 6 characters'),
   confirmPassword: yup
@@ -38,17 +34,22 @@ const { value: confirmPassword } = useField<string>('confirmPassword')
 
 const onSubmit = handleSubmit(async (values) => {
   try {
-    await authStore.register(
+    const result = await authStore.register(
       values.firstname,
       values.lastname,
       values.username,
       values.email,
       values.password
     )
-    messageStore.updateMessage('Registration successful! You can now log in.')
-    router.push({ name: 'login-view' })
+    messageStore.updateMessage(result.message || 'Registration successful!')
+
+    setTimeout(() => {
+      messageStore.resetMessage()
+      router.push({ name: 'login' })
+    }, 1500)
   } catch (err) {
-    messageStore.updateMessage('Registration failed.')
+    console.error(err)
+    messageStore.updateMessage('Registration failed. Please try again.')
     setTimeout(() => messageStore.resetMessage(), 3000)
   }
 })
@@ -73,32 +74,26 @@ const onSubmit = handleSubmit(async (values) => {
           <label class="block text-sm font-medium leading-6 text-gray-900">First Name</label>
           <InputText v-model="firstname" type="text" :error="errors['firstname']" />
         </div>
-
         <div>
           <label class="block text-sm font-medium leading-6 text-gray-900">Last Name</label>
           <InputText v-model="lastname" type="text" :error="errors['lastname']" />
         </div>
-
         <div>
           <label class="block text-sm font-medium leading-6 text-gray-900">Username</label>
           <InputText v-model="username" type="text" :error="errors['username']" />
         </div>
-
         <div>
           <label class="block text-sm font-medium leading-6 text-gray-900">Email</label>
           <InputText v-model="email" type="text" :error="errors['email']" />
         </div>
-
         <div>
           <label class="block text-sm font-medium leading-6 text-gray-900">Password</label>
           <InputText v-model="password" type="password" :error="errors['password']" />
         </div>
-
         <div>
           <label class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
           <InputText v-model="confirmPassword" type="password" :error="errors['confirmPassword']" />
         </div>
-
         <div>
           <button
             type="submit"
@@ -114,10 +109,8 @@ const onSubmit = handleSubmit(async (values) => {
 
       <p class="mt-10 text-center text-sm text-gray-500">
         Already have an account?
-        <a
-          @click.prevent="router.push({ name: 'login-view' })"
-          class="cursor-pointer font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
-        >
+        <a @click.prevent="router.push({ name: 'login' })"
+           class="cursor-pointer font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
           Sign in here
         </a>
       </p>
