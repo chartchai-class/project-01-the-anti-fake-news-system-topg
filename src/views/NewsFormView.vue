@@ -14,7 +14,7 @@ const news = ref<News>({
   longDetail: '',
   trueVotes: 0,
   falseVotes: 0,
-  reporter: '',
+  reporter: null as any,
   date: '',
   time: '',
   comments: [],
@@ -80,7 +80,6 @@ button:focus { outline: none; }
       <BaseInput v-model="news.topic" type="text" label="Topic" />
       <BaseInput v-model="news.shortDetail" type="text" label="Short Detail" />
       <BaseInput v-model="news.longDetail" type="text" label="Long Detail" />
-      <BaseInput v-model="news.reporter" type="text" label="Reporter" />
       <BaseInput v-model="news.date" type="date" label="Date" />
       <BaseInput v-model="news.time" type="time" label="Time" />
       
