@@ -33,7 +33,7 @@ const { value: password } = useField<string>('password')
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
-const onSubmit = handleSubmit((values) => { 
+const onSubmit = handleSubmit((values) => {
 
 
 const messageStore = useMessageStore()
@@ -101,8 +101,9 @@ const messageStore = useMessageStore()
        <p class="mt-10 text-center text-sm text-gray-500">
          Not a member?
          {{ ' ' }}
-         <a href="#" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Try to register here</a>
-
+        <a @click.prevent="router.push({ name: 'register-view' })" class="cursor-pointer font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+          Try to register here
+        </a>
        </p>
      </div>
    </div>

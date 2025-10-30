@@ -32,6 +32,11 @@ const router = createRouter({
 
    },
    {
+      path: '/register',
+      name: 'register-view',
+      component: () => import('@/views/RegisterView.vue')
+   },
+   {
       path: '/news/:id',
       name: 'news-layout-view',
       component: NewsLayoutView,

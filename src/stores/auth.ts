@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import type { AxiosInstance } from 'axios'
-import type { Reporter } from '@/types' 
+import type { Reporter } from '@/types'
 
 const apiClient: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
@@ -15,7 +15,7 @@ const apiClient: AxiosInstance = axios.create({
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     token: null as string | null,
-    user: null as Reporter | null, 
+    user: null as Reporter | null,
   }),
 
   getters: {
@@ -41,6 +41,24 @@ export const useAuthStore = defineStore('auth', {
         })
     },
 
+    register(firstname: string, lastname: string, username: string,email: string, password: string) {
+      return apiClient
+        .post('/api/v1/auth/register', {
+          firstname,
+          lastname,
+          username,
+          email,
+          password,
+        })
+        .then((response) => {
+          this.token = response.data.accessToken;
+          this.user = response.data.user;
+          localStorage.setItem('access_token', this.token as string);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`;
+          localStorage.setItem('user', JSON.stringify(this.user));
+          return response;
+        });
+    },
 
     logout() {
       console.log('logout')
