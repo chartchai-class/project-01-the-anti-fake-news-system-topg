@@ -12,6 +12,7 @@ import { useNewsStore } from '@/stores/News'
 import AddNewsView from '@/views/NewsFormView.vue'
 import LoginView from '@/views/LoginView.vue'
 import AdminUsersView from '@/views/AdminUsers.vue'
+import ProfileView from '@/views/ProfileView.vue'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -106,6 +107,10 @@ const router = createRouter({
       path: '/admin/users',
       name: 'admin-users',
       component: AdminUsersView,
+    },{ 
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView 
     },
   ],
   scrollBehavior(to, from, savedPosition) {

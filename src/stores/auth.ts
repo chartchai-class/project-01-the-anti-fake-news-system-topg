@@ -29,6 +29,9 @@ export const useAuthStore = defineStore('auth', {
    isReporter(): boolean {
      return this.user?.roles.includes('ROLE_REPORTER') || false
    },
+   isReader(): boolean {
+     return this.user?.roles.includes('ROLE_READER') || false
+   },
     authorizationHeader(): string {return `Bearer ${this.token}`
     }
   },
