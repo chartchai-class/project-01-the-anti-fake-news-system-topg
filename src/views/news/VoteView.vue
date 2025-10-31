@@ -3,6 +3,7 @@ import { ref, computed, toRefs, onMounted } from 'vue'
 import { type News } from '@/types'
 import NewsService from '@/services/NewsService'
 import CommentService from '@/services/CommentService'
+import ImageUpload from '@/components/ImageUpload.vue'
 
 const props = defineProps<{ news: News; id: string }>()
 const { news } = toRefs(props)
@@ -12,7 +13,7 @@ const filter = ref<'all' | 'true' | 'false'>('all')
 
 const votedKey = computed(() => `voted:${news.value?.id}`)
 const hasVoted = ref(false)
-const selectedFile = ref<File | null>(null)
+const commentImages = ref<string[]>([])  // <-- updated to store images for this comment
 
 onMounted(() => {
   hasVoted.value = localStorage.getItem(votedKey.value) === '1'
@@ -25,28 +26,14 @@ const filteredComments = computed(() => {
   return news.value.comments.filter(c => c.vote === filter.value)
 })
 
-async function uploadImage(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => resolve(reader.result as string)
-    reader.onerror = reject
-    reader.readAsDataURL(file)
-  })
-}
-
 async function submitComment(vote: 'true' | 'false') {
   if (!news.value || hasVoted.value || !commentText.value.trim()) return
-
-  let imageUrl: string | undefined
-  if (selectedFile.value) {
-    imageUrl = await uploadImage(selectedFile.value)
-  }
 
   const res = await CommentService.addComment({
     newsId: news.value.id,
     text: commentText.value.trim(),
     vote,
-    imageUrl
+    images: commentImages.value, // <-- send images array
   })
 
   news.value.comments!.unshift(res.data)
@@ -58,14 +45,7 @@ async function submitComment(vote: 'true' | 'false') {
   localStorage.setItem(votedKey.value, '1')
   hasVoted.value = true
   commentText.value = ''
-  selectedFile.value = null
-}
-
-function onFileSelected(event: Event) {
-  const target = event.target as HTMLInputElement
-  if (target.files && target.files[0]) {
-    selectedFile.value = target.files[0]
-  }
+  commentImages.value = []  // <-- reset images after submit
 }
 </script>
 
@@ -81,12 +61,8 @@ function onFileSelected(event: Event) {
         rows="3"
         class="w-full border border-gray-700 rounded-lg p-3 mb-2 bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-400 focus:outline-none"
       />
-      <input
-        type="file"
-        accept="image/*"
-        @change="onFileSelected"
-        class="mb-4 text-gray-200"
-      />
+      <!-- Image uploader -->
+      <ImageUpload v-model="commentImages" />
       <!-- Submit buttons -->
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4">
         <button
@@ -106,19 +82,19 @@ function onFileSelected(event: Event) {
         <span v-if="hasVoted" class="text-sm text-gray-400 mt-2 sm:mt-0">You’ve already voted on this news.</span>
       </div>
       <!-- Vote tally -->
-<div class="bg-gray-800 rounded-lg p-4 text-sm mb-6">
-  <p class="text-green-400 font-semibold">True Votes: {{ news.trueVotes }}</p>
-  <p class="text-red-400 font-semibold">False Votes: {{ news.falseVotes }}</p>
-  <p class="mt-2">
-    <span class="text-white font-semibold">Verdict:</span>
-    <span
-      class="font-bold"
-      :class="news.trueVotes > news.falseVotes ? 'text-green-400' : 'text-red-400'"
-    >
-      {{ news.trueVotes > news.falseVotes ? 'Mostly True' : 'Mostly False' }}
-    </span>
-  </p>
-</div>
+      <div class="bg-gray-800 rounded-lg p-4 text-sm mb-6">
+        <p class="text-green-400 font-semibold">True Votes: {{ news.trueVotes }}</p>
+        <p class="text-red-400 font-semibold">False Votes: {{ news.falseVotes }}</p>
+        <p class="mt-2">
+          <span class="text-white font-semibold">Verdict:</span>
+          <span
+            class="font-bold"
+            :class="news.trueVotes > news.falseVotes ? 'text-green-400' : 'text-red-400'"
+          >
+            {{ news.trueVotes > news.falseVotes ? 'Mostly True' : 'Mostly False' }}
+          </span>
+        </p>
+      </div>
       <!-- Filter buttons -->
       <div class="flex gap-2 mb-4">
         <button
@@ -157,17 +133,19 @@ function onFileSelected(event: Event) {
           <!-- Comment content -->
           <div class="flex-1">
             <p class="text-gray-200">{{ c.text }}</p>
-            <img
-              v-if="c.imageUrl"
-              :src="c.imageUrl"
-              alt="Comment image"
-              class="mt-2 max-h-40 rounded-lg object-cover border border-gray-700"
-            />
+            <div v-if="c.images && c.images.length" class="mt-2 flex flex-wrap gap-2">
+              <img
+                v-for="(img, i) in c.images"
+                :key="i"
+                :src="img"
+                alt="Comment image"
+                class="max-h-40 rounded-lg object-cover border border-gray-700"
+              />
+            </div>
             <span class="text-xs text-gray-400 mt-1 block">{{ new Date(c.createdAt).toLocaleString() }}</span>
           </div>
         </li>
       </ul>
-
     </div>
   </div>
 </template>
