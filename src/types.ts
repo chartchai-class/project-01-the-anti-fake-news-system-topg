@@ -10,7 +10,7 @@ export interface Comment {
 }
 
 export interface News {
-  id: number | null
+  id: number
   topic: string
   shortDetail: string
   longDetail: string
