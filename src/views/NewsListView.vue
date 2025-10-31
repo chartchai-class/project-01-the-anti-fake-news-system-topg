@@ -13,7 +13,7 @@ const authStore = useAuthStore()
 
 // Reactive news data
 const newsList = ref<News[]>([])
-const totalNews = ref(0)
+const totalNews = ref(0) // total visible news count
 
 // Props for default page and size
 const props = defineProps({
@@ -37,7 +37,6 @@ function fetchNews() {
   const isAdmin = authStore.user?.roles.includes('ROLE_ADMIN')
 
   let queryFunction
-
   if (keyword.value.trim() === '') {
     queryFunction = NewsService.getNews(selectedSize.value, page.value, statusParam, isAdmin)
   } else {
@@ -53,7 +52,7 @@ function fetchNews() {
     .then((response) => {
       let fetchedNews: News[] = response.data
 
-      // Hide news with hidden=true for non-admins
+      // Filter hidden news for non-admins
       if (!isAdmin) {
         fetchedNews = fetchedNews.filter(n => !n.hidden)
       }
@@ -63,7 +62,7 @@ function fetchNews() {
       // Update total count for pagination
       totalNews.value = isAdmin
         ? parseInt(response.headers['x-total-count'])
-        : fetchedNews.length
+        : Math.max(parseInt(response.headers['x-total-count']) - fetchedNews.filter(n => n.hidden).length, 0)
     })
     .catch(() => {
       router.push({ name: 'NetworkError' })
@@ -106,13 +105,13 @@ function handleDelete(newsId: number) {
 }
 </script>
 
+
 <template>
   <div class="flex flex-col min-h-screen bg-black text-white">
     <!-- Top controls bar -->
     <div class="p-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-b-xl">
       <div class="flex flex-wrap justify-center gap-6 md:gap-8 items-center">
         <span v-if="authStore.isAdmin || authStore.isReporter">
-          <!-- Add News button -->
           <RouterLink
             :to="{ name: 'add-news' }"
             class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
@@ -121,15 +120,12 @@ function handleDelete(newsId: number) {
           </RouterLink>
         </span>
 
-        <!-- Search bar -->
         <div class="w-64">
           <BaseInput v-model="keyword" label="Search News" @input="fetchNews" />
         </div>
 
-        <!-- Divider -->
         <div class="border-l border-gray-600 h-6 hidden md:block"></div>
 
-        <!-- News type selector -->
         <div class="flex items-center gap-2">
           <label for="status" class="text-sm md:text-base font-semibold text-gray-300">News type:</label>
           <select
@@ -150,10 +146,8 @@ function handleDelete(newsId: number) {
           </select>
         </div>
 
-        <!-- Divider -->
         <div class="border-l border-gray-600 h-6 hidden md:block"></div>
 
-        <!-- Page size selector -->
         <div class="flex items-center gap-2">
           <label for="size" class="text-sm md:text-base font-semibold text-gray-300">News per page:</label>
           <select
@@ -173,7 +167,6 @@ function handleDelete(newsId: number) {
 
     <!-- Main content area -->
     <div class="flex-1 p-6">
-      <!-- News cards -->
       <div class="flex flex-wrap justify-center gap-4 mb-6">
         <NewsCard
           v-for="news in newsList"
@@ -183,7 +176,6 @@ function handleDelete(newsId: number) {
         />
       </div>
 
-      <!-- Pagination at bottom -->
       <div class="flex justify-center gap-8 text-base">
         <RouterLink
           id="page-prev"
