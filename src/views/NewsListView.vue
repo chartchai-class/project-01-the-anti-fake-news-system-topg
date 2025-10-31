@@ -11,36 +11,28 @@ const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
 
-// Reactive news data
 const newsList = ref<News[]>([])
-const totalNews = ref(0) // total visible news count
+const totalVisibleNews = ref(0) // total news visible to the current user
 
-// Props for default page and size
 const props = defineProps({
   page: { type: Number, required: true },
   size: { type: Number, required: true },
 })
 
-// Reactive selected page and size from route query
 const page = computed(() => Number(route.query.page) || props.page)
 const selectedSize = ref(props.size)
-
-// News type selector (all, True, False, Pending)
 const selectedType = ref((route.query.status as string) || 'all')
-
-// Keyword search
 const keyword = ref('')
 
-// Fetch news from backend
-function fetchNews() {
-  const statusParam = selectedType.value
+async function fetchNews() {
   const isAdmin = authStore.user?.roles.includes('ROLE_ADMIN')
+  const statusParam = selectedType.value
 
-  let queryFunction
+  let response
   if (keyword.value.trim() === '') {
-    queryFunction = NewsService.getNews(selectedSize.value, page.value, statusParam, isAdmin)
+    response = await NewsService.getNews(selectedSize.value, page.value, statusParam, isAdmin)
   } else {
-    queryFunction = NewsService.getNewsByKeyword(
+    response = await NewsService.getNewsByKeyword(
       keyword.value.trim(),
       selectedSize.value,
       page.value,
@@ -48,33 +40,23 @@ function fetchNews() {
     )
   }
 
-  queryFunction
-    .then((response) => {
-      let fetchedNews: News[] = response.data
+  if (!response.data) {
+    newsList.value = []
+    totalVisibleNews.value = 0
+    return
+  }
 
-      // Filter hidden news for non-admins
-      if (!isAdmin) {
-        fetchedNews = fetchedNews.filter(n => !n.hidden)
-      }
+  // No filtering needed - backend handles it for non-admins
+  newsList.value = response.data
 
-      newsList.value = fetchedNews
-
-      // Update total count for pagination
-      totalNews.value = isAdmin
-        ? parseInt(response.headers['x-total-count'])
-        : Math.max(parseInt(response.headers['x-total-count']) - fetchedNews.filter(n => n.hidden).length, 0)
-    })
-    .catch(() => {
-      router.push({ name: 'NetworkError' })
-    })
+  // Get total count from header
+  totalVisibleNews.value = parseInt(response.headers['x-total-count'])
 }
 
-// Automatically fetch news when page, size, type, or keyword changes
 watchEffect(() => {
   fetchNews()
 })
 
-// Change page size
 function changeSize() {
   router.push({
     name: 'news-list-view',
@@ -86,25 +68,17 @@ function changeSize() {
   })
 }
 
-// Pagination
 const hasNextPage = computed(() => {
-  return page.value * selectedSize.value < totalNews.value
+  return page.value * selectedSize.value < totalVisibleNews.value
 })
 
-// Delete news
 function handleDelete(newsId: number) {
   if (!confirm('Are you sure you want to delete this news item?')) return
   NewsService.deleteNews(newsId)
-    .then(() => {
-      fetchNews()
-    })
-    .catch((err) => {
-      console.error(err)
-      alert('Failed to delete news.')
-    })
+    .then(() => fetchNews())
+    .catch(() => alert('Failed to delete news.'))
 }
 </script>
-
 
 <template>
   <div class="flex flex-col min-h-screen bg-black text-white">
