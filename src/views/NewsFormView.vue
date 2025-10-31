@@ -6,7 +6,6 @@ import NewsService from '@/services/NewsService'
 import BaseInput from '@/components/BaseInput.vue'
 import ImageUpload from '@/components/ImageUpload.vue'
 
-// Initialize a new news item
 const news = ref<News>({
   id: null,
   topic: '',
@@ -23,7 +22,6 @@ const news = ref<News>({
 
 const router = useRouter()
 
-// Function to save news
 function saveNews() {
   NewsService.saveNews(news.value)
     .then((response) => {
@@ -36,59 +34,62 @@ function saveNews() {
 }
 </script>
 
-<style scoped>
-/* reuse your existing styling for input fields and buttons */
-.field {
-  margin-bottom: 24px;
-  box-sizing: border-box;
-  border: solid 1px rgba(0, 0, 0, 0.4);
-  height: 50px;
-  width: 95%;
-  padding: 0 10px;
-  font-size: 20px;
-}
-.field:focus {
-  border-color: #39b982;
-  outline: none;
-}
-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 52px;
-  padding: 0 40px;
-  background: #38c789;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s linear;
-}
-button:hover {
-  transform: scale(1.02);
-  background: #16d180;
-}
-button:active { transform: scale(1); }
-button:focus { outline: none; }
-</style>
-
 <template>
-  <div>
-    <h1>Create a News Item</h1>
-    <form @submit.prevent="saveNews">
-      <BaseInput v-model="news.topic" type="text" label="Topic" />
-      <BaseInput v-model="news.shortDetail" type="text" label="Short Detail" />
-      <BaseInput v-model="news.longDetail" type="text" label="Long Detail" />
-      <BaseInput v-model="news.date" type="date" label="Date" />
-      <BaseInput v-model="news.time" type="time" label="Time" />
-      
-      <h3>The image of the Event</h3>
-      <ImageUpload v-model="news.images" />
+  <div class="min-h-screen bg-[#1a1a1d] text-gray-200 flex flex-col items-center py-12 px-4">
+    <div class="w-full max-w-2xl bg-[#161618] rounded-2xl shadow-2xl p-10 border border-[#1e1e20]">
+      <h1 class="text-4xl font-semibold mb-10 text-center text-gray-100 tracking-tight">
+        📰 Create a News Item
+      </h1>
 
-      <button type="submit">Submit</button>
-    </form>
+      <form @submit.prevent="saveNews" class="space-y-8">
+        <!-- Topic -->
+        <BaseInput v-model="news.topic" label="Topic" />
 
-    <pre>{{ news }}</pre>
+        <!-- Short Detail -->
+        <BaseInput v-model="news.shortDetail" label="Short Detail" />
+
+        <!-- Long Detail -->
+        <BaseInput v-model="news.longDetail" label="Long Detail" type="textarea" rows="6" />
+
+        <!-- Date & Time (manually styled) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="flex flex-col">
+            <label class="block text-sm font-medium text-gray-400 mb-2">Date</label>
+            <input
+              v-model="news.date"
+              type="date"
+              class="w-full h-14 bg-[#2a2a2e] text-gray-100 border border-[#1c1c1f] rounded-xl px-4 py-2 placeholder-gray-500 hover:bg-[#323236] hover:border-[#29292c] transition-all duration-200"
+            />
+          </div>
+          <div class="flex flex-col">
+            <label class="block text-sm font-medium text-gray-400 mb-2">Time</label>
+            <input
+              v-model="news.time"
+              type="time"
+              class="w-full h-14 bg-[#2a2a2e] text-gray-100 border border-[#1c1c1f] rounded-xl px-4 py-2 placeholder-gray-500 hover:bg-[#323236] hover:border-[#29292c] transition-all duration-200"
+            />
+          </div>
+        </div>
+
+        <!-- Image Upload -->
+        <div>
+          <h3 class="text-lg font-medium text-gray-300 mb-3">Event Image</h3>
+          <div class="bg-[#2a2a2e] p-4 rounded-xl border border-[#1c1c1f] hover:bg-[#323236] hover:border-[#29292c] transition-all">
+            <ImageUpload v-model="news.images" />
+          </div>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full bg-gray-700 hover:bg-gray-600 active:scale-95 transition-all duration-200 text-gray-100 font-medium py-3 rounded-xl shadow-lg"
+        >
+          Submit News
+        </button>
+
+
+      </form>
+
+    </div>
   </div>
 </template>
