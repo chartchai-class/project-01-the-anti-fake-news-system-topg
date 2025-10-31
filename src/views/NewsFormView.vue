@@ -13,7 +13,7 @@ const news = ref<News>({
   longDetail: '',
   trueVotes: 0,
   falseVotes: 0,
-  reporter: null as any,
+  reporterName: null as any,
   date: '',
   time: '',
   comments: [],
