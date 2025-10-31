@@ -2,16 +2,27 @@ import apiClient from './AxiosClient'
 import type { Comment } from '@/types'
 
 export default {
-  addComment(payload: Omit<Comment, 'id' | 'createdAt'>) {
+  // Add a new comment
+  addComment(payload: Omit<Comment, 'id' | 'createdAt' | 'hidden'>) {
     return apiClient.post<Comment>('/comments', {
       ...payload,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      hidden: false, // default to visible
     })
   },
 
-  getCommentsByNews(newsId: number) {
+// Get all comments for a news item
+  // Pass isAdmin=true to get hidden comments as well
+  getCommentsByNews(newsId: number, isAdmin = false) {
     return apiClient.get<Comment[]>('/comments', {
-      params: { newsId, _sort: 'id', _order: 'desc' }
+      params: { newsId, admin: isAdmin, _sort: 'id', _order: 'desc' }
+    })
+  },
+
+  // Hide/unhide a comment (admins only)
+  hideComment(commentId: number, hidden?: boolean) {
+    return apiClient.patch<Comment>(`/comments/hide/${commentId}`, null, {
+      params: { hidden }
     })
   }
 }

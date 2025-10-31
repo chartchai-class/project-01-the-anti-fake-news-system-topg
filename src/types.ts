@@ -7,7 +7,9 @@ export interface Comment {
   vote: 'true' | 'false'
   createdAt: string
   images?: string[]
+  hidden?: boolean  
 }
+
 
 export interface User {
   id: number

@@ -2,9 +2,13 @@
 import { ref, computed, toRefs, onMounted } from 'vue'
 import { type News, type Comment } from '@/types'
 import CommentService from '@/services/CommentService'
+import { useAuthStore } from '@/stores/auth'
 
 const props = defineProps<{ news: News; id: string }>()
 const { news } = toRefs(props)
+
+const authStore = useAuthStore()
+const isAdmin = computed(() => authStore.user?.roles.includes('ROLE_ADMIN'))
 
 const filter = ref<'all' | 'true' | 'false'>('all')
 const votedKey = computed(() => `voted:${news.value?.id}`)
@@ -15,18 +19,38 @@ onMounted(async () => {
   hasVoted.value = localStorage.getItem(votedKey.value) === '1'
   
   if (news.value?.id) {
-    try {
-      const response = await CommentService.getCommentsByNews(news.value.id)
-      comments.value = response.data
-    } catch (err) {
-      console.error('Failed to fetch comments:', err)
-    }
+    await fetchComments()
   }
 })
 
+// Fetch comments, showing hidden only for admins
+async function fetchComments() {
+  try {
+    const response = await CommentService.getCommentsByNews(news.value.id, isAdmin.value)
+    comments.value = response.data
+  } catch (err) {
+    console.error('Failed to fetch comments:', err)
+  }
+}
+
+// Admin hide/unhide comment
+async function toggleHide(comment: Comment) {
+  if (!isAdmin.value || !comment.id) return
+  try {
+    await CommentService.hideComment(comment.id, !comment.hidden)
+    comment.hidden = !comment.hidden
+  } catch (err) {
+    console.error('Failed to toggle hide:', err)
+  }
+}
+
 const filteredComments = computed(() => {
-  if (filter.value === 'all') return comments.value
-  return comments.value.filter(c => c.vote === filter.value)
+  let visible = comments.value
+  // hide hidden comments for non-admins
+  if (!isAdmin.value) visible = visible.filter(c => !c.hidden)
+
+  if (filter.value === 'all') return visible
+  return visible.filter(c => c.vote === filter.value)
 })
 </script>
 
@@ -81,7 +105,7 @@ const filteredComments = computed(() => {
           <div class="flex-1">
             <p class="text-gray-200">{{ c.text }}</p>
 
-            <!-- ✅ Multiple images supported -->
+            <!-- Multiple images -->
             <div v-if="c.images && c.images.length" class="mt-2 flex flex-wrap gap-2">
               <img
                 v-for="(img, i) in c.images"
@@ -95,6 +119,16 @@ const filteredComments = computed(() => {
             <span class="text-xs text-gray-400 mt-1 block">
               {{ new Date(c.createdAt).toLocaleString() }}
             </span>
+          </div>
+
+          <!-- Admin hide/unhide button -->
+          <div v-if="isAdmin" class="ml-2 flex-shrink-0">
+            <button
+              @click="toggleHide(c)"
+              class="px-2 py-1 text-sm rounded-lg border border-gray-600 hover:bg-gray-700 transition"
+            >
+              {{ c.hidden ? 'Unhide' : 'Hide' }}
+            </button>
           </div>
         </li>
       </ul>
