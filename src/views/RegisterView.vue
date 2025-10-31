@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import InputText from '@/components/InputText.vue'
+import ImageUpload from '@/components/ImageUpload.vue' // ✅ added
 import * as yup from 'yup'
 import { useAuthStore } from '@/stores/auth'
 import { useField, useForm } from 'vee-validate'
 import { useMessageStore } from '@/stores/message'
 import { useRouter } from 'vue-router'
+import { ref } from 'vue' // ✅ added
 
 const authStore = useAuthStore()
 const messageStore = useMessageStore()
 const router = useRouter()
 
-// ✅ Validation schema includes username
 const validationSchema = yup.object({
   firstname: yup.string().required('First name is required'),
   lastname: yup.string().required('Last name is required'),
@@ -32,6 +33,8 @@ const { value: email } = useField<string>('email')
 const { value: password } = useField<string>('password')
 const { value: confirmPassword } = useField<string>('confirmPassword')
 
+const profileImage = ref<string[]>([]) // ✅ added for uploaded image URLs
+
 const onSubmit = handleSubmit(async (values) => {
   try {
     const result = await authStore.register(
@@ -39,7 +42,8 @@ const onSubmit = handleSubmit(async (values) => {
       values.lastname,
       values.username,
       values.email,
-      values.password
+      values.password,
+      profileImage.value[0] || null // ✅ send the uploaded image (first one)
     )
     messageStore.updateMessage(result.message || 'Registration successful!')
 
@@ -94,6 +98,13 @@ const onSubmit = handleSubmit(async (values) => {
           <label class="block text-sm font-medium leading-6 text-gray-900">Confirm Password</label>
           <InputText v-model="confirmPassword" type="password" :error="errors['confirmPassword']" />
         </div>
+
+        <!-- ✅ Profile image upload -->
+        <div>
+          <label class="block text-sm font-medium leading-6 text-gray-900">Profile Image</label>
+          <ImageUpload v-model="profileImage" />
+        </div>
+
         <div>
           <button
             type="submit"

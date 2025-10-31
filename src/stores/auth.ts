@@ -61,6 +61,7 @@ export const useAuthStore = defineStore('auth', {
           username,
           email,
           password,
+          profileImage: null,
         })
         .then((response) => {
           // Registration succeeded; just return backend message
