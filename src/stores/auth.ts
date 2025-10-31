@@ -53,7 +53,14 @@ export const useAuthStore = defineStore('auth', {
         })
     },
 
-    register(firstname: string, lastname: string, username: string, email: string, password: string) {
+    register(
+      firstname: string,
+      lastname: string,
+      username: string,
+      email: string,
+      password: string,
+      profileImage?: string | null
+    ) {
       return apiClient
         .post('/api/v1/auth/register', {
           firstname,
@@ -61,12 +68,9 @@ export const useAuthStore = defineStore('auth', {
           username,
           email,
           password,
-          profileImage: null,
+          profileImage: profileImage || null, // ✅ send uploaded image URL
         })
-        .then((response) => {
-          // Registration succeeded; just return backend message
-          return response.data
-        })
+        .then((response) => response.data)
     },
 
     logout() {
