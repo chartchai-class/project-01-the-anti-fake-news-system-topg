@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import NewsCard from '@/components/NewsCard.vue'
-import BaseInput from '@/components/BaseInput.vue'
+//import BaseInput from '@/components/BaseInput.vue'
 import { type News } from '@/types'
 import { ref, computed, watchEffect } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -30,7 +30,7 @@ async function fetchNews() {
 
   let response
   if (keyword.value.trim() === '') {
-    response = await NewsService.getNews(selectedSize.value, page.value, statusParam, isAdmin)
+    response = await NewsService.getNews(selectedSize.value, page.value, statusParam)
   } else {
     response = await NewsService.getNewsByKeyword(
       keyword.value.trim(),

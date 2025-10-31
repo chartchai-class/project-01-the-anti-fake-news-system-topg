@@ -2,7 +2,6 @@ import apiClient from './AxiosClient'
 import type { News } from '@/types'
 import axios from 'axios'
 
-
 const API_URL = import.meta.env.VITE_BACKEND_URL
 
 export default {
@@ -22,12 +21,12 @@ export default {
     return apiClient.get<News>(`/news/${id}`)
   },
 
-  // This one is for the vote count display, not for voting
   voteNews(id: number, trueVotes: number, falseVotes: number) {
     return apiClient.patch<News>(`/news/${id}`, { trueVotes, falseVotes })
   },
 
-  saveNews(news: News) {
+
+  saveNews(news: Omit<News, 'id'>) {
     return apiClient.post<News>('/news', news)
   },
 
@@ -41,7 +40,6 @@ export default {
     return apiClient.patch(`/news/${id}/delete`)
   },
 
-  // Add hideNews method
   hideNews(newsId: number, hidden: boolean) {
     return axios.patch(`${API_URL}/news/${newsId}/hide`, { hidden })
   }
