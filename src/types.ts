@@ -6,7 +6,7 @@ export interface Comment {
   text: string
   vote: 'true' | 'false'
   createdAt: string
-  imageUrl?: string | null
+  images?: string[]
 }
 
 export interface News {
@@ -29,12 +29,12 @@ export interface MessageState {
 }
 
 export interface NewsState {
-  news: News | null
+  news: News
 }
 
 export interface Reporter{
 
- id: number | null
+ id: number
  name: string
  roles: string[]
 
