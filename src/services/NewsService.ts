@@ -8,6 +8,12 @@ export default {
     return apiClient.get<News[]>(url)
   },
 
+  getAdminNews(perPage: number, page: number, status: string = 'all') {
+    let url = `/news/admin?_limit=${perPage}&_page=${page}`
+    if (status !== 'all') url += `&status=${status}`
+    return apiClient.get<News[]>(url)
+  },
+
   getNewsItem(id: number) {
     return apiClient.get<News>(`/news/${id}`)
   },
@@ -26,4 +32,8 @@ export default {
     if (status !== 'all') url += `&status=${status}`
     return apiClient.get<News[]>(url)
   },
+
+  deleteNews(id: number) {
+    return apiClient.patch(`/news/${id}/delete`)
+  }
 }

@@ -32,10 +32,12 @@ const keyword = ref('')
 // Fetch news from backend
 function fetchNews() {
   const statusParam = selectedType.value
+  const isAdmin = authStore.user?.role === 'ROLE_ADMIN'
+
   let queryFunction
 
   if (keyword.value.trim() === '') {
-    queryFunction = NewsService.getNews(selectedSize.value, page.value, statusParam)
+    queryFunction = NewsService.getNews(selectedSize.value, page.value, statusParam, isAdmin)
   } else {
     queryFunction = NewsService.getNewsByKeyword(
       keyword.value.trim(),
@@ -76,6 +78,18 @@ function changeSize() {
 const hasNextPage = computed(() => {
   return page.value * selectedSize.value < totalNews.value
 })
+
+function handleDelete(newsId: number) {
+  if (!confirm('Are you sure you want to delete this news item?')) return
+  NewsService.deleteNews(newsId)
+    .then(() => {
+      fetchNews()
+    })
+    .catch((err) => {
+      console.error(err)
+      alert('Failed to delete news.')
+    })
+}
 </script>
 
 <template>
@@ -146,7 +160,12 @@ const hasNextPage = computed(() => {
     <div class="flex-1 p-6">
       <!-- News cards -->
       <div class="flex flex-wrap justify-center gap-4 mb-6">
-        <NewsCard v-for="news in newsList" :key="news.id" :news="news" />
+        <NewsCard
+          v-for="news in newsList"
+          :key="news.id"
+          :news="news"
+          @delete="handleDelete"
+        />
       </div>
 
       <!-- Pagination at bottom -->
