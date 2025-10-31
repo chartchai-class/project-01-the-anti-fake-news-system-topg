@@ -2,9 +2,9 @@
 import { type News } from '@/types'
 import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import NewsService from '@/services/NewsService'
 
 const props = defineProps<{ news: News }>()
-const emit = defineEmits(['delete'])
 const authStore = useAuthStore()
 
 const isAdmin = computed(() => authStore.user?.roles.includes('ROLE_ADMIN'))
@@ -19,47 +19,51 @@ const status = computed(() => {
 // Compute total votes and percentages
 const totalVotes = computed(() => props.news.trueVotes + props.news.falseVotes)
 const truePercentage = computed(() =>
-  totalVotes.value ? (props.news.trueVotes / totalVotes.value) * 100 : 0,
+  totalVotes.value ? (props.news.trueVotes / totalVotes.value) * 100 : 0
 )
 const falsePercentage = computed(() =>
-  totalVotes.value ? (props.news.falseVotes / totalVotes.value) * 100 : 0,
+  totalVotes.value ? (props.news.falseVotes / totalVotes.value) * 100 : 0
 )
 
-function onDeleteClick(e: Event) {
+// Hide/Unhide button click
+async function onHideClick(e: Event) {
   e.preventDefault()
-  emit('delete', props.news.id)
+  try {
+    await NewsService.hideNews(props.news.id, !props.news.hidden)
+    props.news.hidden = !props.news.hidden
+  } catch (err) {
+    console.error('Failed to update hidden status:', err)
+    alert('Failed to hide/unhide news.')
+  }
 }
+
+// Hide news from non-admins if hidden
+const isVisible = computed(() => !props.news.hidden || isAdmin.value)
 </script>
 
 <template>
-  <div class="relative">
+  <div v-if="isVisible" class="relative">
     <RouterLink class="no-underline" :to="{ name: 'news-detail-view', params: { id: news.id } }">
       <div
         class="cursor-pointer w-[360px] h-[480px] rounded-2xl hover:scale-[1.03] hover:shadow-xl transition-all duration-400 flex flex-col justify-between relative"
         :class="{
-          'bg-gradient-to-br from-[rgba(10,10,10,0.95)] to-emerald-900 hover:to-emerald-700':
-            status === 'True',
-          'bg-gradient-to-br from-[rgba(10,10,10,0.95)] to-rose-900 hover:to-rose-700':
-            status === 'False',
-          'bg-gradient-to-br from-[rgba(10,10,10,0.95)] to-yellow-700 hover:to-yellow-500':
-            status === 'Pending',
+          'bg-gradient-to-br from-[rgba(10,10,10,0.95)] to-emerald-900 hover:to-emerald-700': status === 'True',
+          'bg-gradient-to-br from-[rgba(10,10,10,0.95)] to-rose-900 hover:to-rose-700': status === 'False',
+          'bg-gradient-to-br from-[rgba(10,10,10,0.95)] to-yellow-700 hover:to-yellow-500': status === 'Pending',
         }"
       >
-        <!-- Delete Button - now inside the card -->
+        <!-- Hide/Unhide Button for Admins -->
         <button
           v-if="isAdmin"
-          @click.prevent="onDeleteClick"
-          class="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-md z-10 pointer-events-auto"
-          title="Delete this news item"
+          @click.prevent="onHideClick"
+          class="absolute top-3 right-3 bg-yellow-600 hover:bg-yellow-700 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-md z-10 pointer-events-auto"
+          :title="news.hidden ? 'Unhide news' : 'Hide news'"
         >
-          ✖
+          👁
         </button>
 
         <!-- News Image -->
-        <div
-          v-if="news.images && news.images.length > 0"
-          class="w-full overflow-hidden rounded-t-2xl"
-        >
+        <div v-if="news.images && news.images.length > 0" class="w-full overflow-hidden rounded-t-2xl">
           <img
             v-for="image in news.images"
             :key="image"
@@ -68,6 +72,7 @@ function onDeleteClick(e: Event) {
             class="w-full h-[180px] object-cover"
           />
         </div>
+
         <div class="p-4 flex flex-col justify-between flex-1">
           <!-- Title -->
           <div class="flex-none mb-1">
@@ -75,12 +80,12 @@ function onDeleteClick(e: Event) {
               {{ news.topic }}
             </h2>
           </div>
+
           <!-- Description -->
           <div class="flex-none mt-2 overflow-auto min-h-[60px] text-left">
-            <p class="text-base text-white/90 break-words">
-              {{ news.shortDetail }}
-            </p>
+            <p class="text-base text-white/90 break-words">{{ news.shortDetail }}</p>
           </div>
+
           <!-- Status -->
           <div class="flex-none mb-2 mt-2">
             <span
@@ -94,22 +99,17 @@ function onDeleteClick(e: Event) {
               Status: {{ status }}
             </span>
           </div>
+
           <!-- Vote Ratio Bar -->
           <div class="flex flex-col gap-1 mt-2">
             <div class="w-full h-4 bg-white/20 rounded-full overflow-hidden flex">
               <div
                 class="h-4 rounded-l-full"
-                :style="{
-                  width: truePercentage + '%',
-                  backgroundColor: '#22C55E', // green for True
-                }"
+                :style="{ width: truePercentage + '%', backgroundColor: '#22C55E' }"
               ></div>
               <div
                 class="h-4 rounded-r-full"
-                :style="{
-                  width: falsePercentage + '%',
-                  backgroundColor: '#EF4444', // red for False
-                }"
+                :style="{ width: falsePercentage + '%', backgroundColor: '#EF4444' }"
               ></div>
             </div>
             <div class="flex justify-between text-sm text-white drop-shadow-sm mt-1">
@@ -117,11 +117,10 @@ function onDeleteClick(e: Event) {
               <span>False: {{ news.falseVotes }} ({{ falsePercentage.toFixed(0) }}%)</span>
             </div>
           </div>
+
           <!-- Reporter and Date/Time -->
           <div class="flex justify-between items-center mt-3">
-            <div class="text-lg font-semibold text-white">
-              {{ news.reporterName }}
-            </div>
+            <div class="text-lg font-semibold text-white">{{ news.reporterName }}</div>
             <div class="text-sm text-white/70">{{ news.date }} @ {{ news.time }}</div>
           </div>
         </div>

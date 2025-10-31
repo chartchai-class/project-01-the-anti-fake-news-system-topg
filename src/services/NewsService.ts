@@ -1,5 +1,9 @@
 import apiClient from './AxiosClient'
 import type { News } from '@/types'
+import axios from 'axios'
+
+
+const API_URL = import.meta.env.VITE_BACKEND_URL
 
 export default {
   getNews(perPage: number, page: number, status: string = 'all') {
@@ -35,5 +39,10 @@ export default {
 
   deleteNews(id: number) {
     return apiClient.patch(`/news/${id}/delete`)
+  },
+
+  // Add hideNews method
+  hideNews(newsId: number, hidden: boolean) {
+    return axios.patch(`${API_URL}/news/${newsId}/hide`, { hidden })
   }
 }

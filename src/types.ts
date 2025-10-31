@@ -21,6 +21,7 @@ export interface News {
   time: string // format: HH:mm:ss
   comments?: Comment[]
   images: string[]
+  hidden?: boolean 
 }
 
 export interface MessageState {

@@ -5,10 +5,12 @@ import { type News } from '@/types'
 import { ref, computed, watchEffect } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import NewsService from '@/services/NewsService'
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore } from '@/stores/auth'
+
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+
 // Reactive news data
 const newsList = ref<News[]>([])
 const totalNews = ref(0)
@@ -32,7 +34,7 @@ const keyword = ref('')
 // Fetch news from backend
 function fetchNews() {
   const statusParam = selectedType.value
-  const isAdmin = authStore.user?.role === 'ROLE_ADMIN'
+  const isAdmin = authStore.user?.roles.includes('ROLE_ADMIN')
 
   let queryFunction
 
@@ -49,8 +51,19 @@ function fetchNews() {
 
   queryFunction
     .then((response) => {
-      newsList.value = response.data
-      totalNews.value = parseInt(response.headers['x-total-count'])
+      let fetchedNews: News[] = response.data
+
+      // Hide news with hidden=true for non-admins
+      if (!isAdmin) {
+        fetchedNews = fetchedNews.filter(n => !n.hidden)
+      }
+
+      newsList.value = fetchedNews
+
+      // Update total count for pagination
+      totalNews.value = isAdmin
+        ? parseInt(response.headers['x-total-count'])
+        : fetchedNews.length
     })
     .catch(() => {
       router.push({ name: 'NetworkError' })
@@ -79,6 +92,7 @@ const hasNextPage = computed(() => {
   return page.value * selectedSize.value < totalNews.value
 })
 
+// Delete news
 function handleDelete(newsId: number) {
   if (!confirm('Are you sure you want to delete this news item?')) return
   NewsService.deleteNews(newsId)
@@ -97,15 +111,16 @@ function handleDelete(newsId: number) {
     <!-- Top controls bar -->
     <div class="p-4 bg-gradient-to-r from-[rgb(28,28,30)] to-[rgb(38,38,40)] shadow-md rounded-b-xl">
       <div class="flex flex-wrap justify-center gap-6 md:gap-8 items-center">
-      <span v-if="authStore.isAdmin || authStore.isReporter">
-        <!-- Add News button -->
-        <RouterLink
-          :to="{ name: 'add-news' }"
-          class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
-        >
-          Add News
-        </RouterLink>
-      </span>
+        <span v-if="authStore.isAdmin || authStore.isReporter">
+          <!-- Add News button -->
+          <RouterLink
+            :to="{ name: 'add-news' }"
+            class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+          >
+            Add News
+          </RouterLink>
+        </span>
+
         <!-- Search bar -->
         <div class="w-64">
           <BaseInput v-model="keyword" label="Search News" @input="fetchNews" />
