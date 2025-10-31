@@ -18,7 +18,7 @@ export interface User {
 }
 
 export interface News {
-  id: number
+  id: number | null
   topic: string
   shortDetail: string
   longDetail: string
