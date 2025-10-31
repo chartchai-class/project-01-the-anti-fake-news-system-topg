@@ -17,29 +17,29 @@
         <div class="p-6 space-y-4">
           <div class="flex items-start border-b border-gray-700 pb-4">
             <span class="text-gray-400 font-medium w-32 flex-shrink-0">ID:</span>
-            <span class="text-white">{{ user.id }}</span>
+            <span class="text-white">{{ user?.id }}</span>
           </div>
 
           <div class="flex items-start border-b border-gray-700 pb-4">
             <span class="text-gray-400 font-medium w-32 flex-shrink-0">Name:</span>
-            <span class="text-white">{{ user.name }}</span>
+            <span class="text-white">{{ user?.name }}</span>
           </div>
 
           <div class="flex items-start border-b border-gray-700 pb-4">
             <span class="text-gray-400 font-medium w-32 flex-shrink-0">Email:</span>
-            <span class="text-white">{{ user.email }}</span>
+            <span class="text-white">{{ user?.email }}</span>
           </div>
 
           <div class="flex items-start border-b border-gray-700 pb-4">
             <span class="text-gray-400 font-medium w-32 flex-shrink-0">Username:</span>
-            <span class="text-white">{{ user.username }}</span>
+            <span class="text-white">{{ user?.username }}</span>
           </div>
 
           <div class="flex items-start">
             <span class="text-gray-400 font-medium w-32 flex-shrink-0">Roles:</span>
             <div class="flex flex-wrap gap-2">
               <span
-                v-for="role in user.roles"
+                v-for="role in user?.roles"
                 :key="role"
                 class="inline-block bg-blue-900 text-blue-200 px-3 py-1 rounded-full text-sm font-medium"
               >
@@ -75,9 +75,10 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
+import type { User } from '@/types'
 
 const authStore = useAuthStore()
-const user = ref(authStore.user ?? {})
+const user = ref<User | null>(authStore.user ?? null)
 const loading = ref(true)
 
 onMounted(async () => {

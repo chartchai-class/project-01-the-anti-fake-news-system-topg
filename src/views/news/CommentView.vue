@@ -64,7 +64,11 @@ const filteredComments = computed(() => {
 
       <!-- Comment list -->
       <ul class="space-y-3">
-        <li v-for="c in filteredComments" :key="c.id" class="flex items-start gap-3 border-b border-gray-700 pb-3">
+        <li
+          v-for="c in filteredComments"
+          :key="c.id"
+          class="flex items-start gap-3 border-b border-gray-700 pb-3"
+        >
           <!-- Vote badge -->
           <span
             :class="c.vote==='true' ? 'bg-green-700 text-green-100' : 'bg-red-700 text-red-100'"
@@ -76,18 +80,24 @@ const filteredComments = computed(() => {
           <!-- Comment content -->
           <div class="flex-1">
             <p class="text-gray-200">{{ c.text }}</p>
-            <img
-              v-if="c.imageUrl"
-              :src="c.imageUrl"
-              alt="Comment image"
-              class="mt-2 max-h-40 rounded-lg object-cover border border-gray-700"
-            />
-            <span class="text-xs text-gray-400 mt-1 block">{{ new Date(c.createdAt).toLocaleString() }}</span>
+
+            <!-- ✅ Multiple images supported -->
+            <div v-if="c.images && c.images.length" class="mt-2 flex flex-wrap gap-2">
+              <img
+                v-for="(img, i) in c.images"
+                :key="i"
+                :src="img"
+                alt="Comment image"
+                class="max-h-40 rounded-lg object-cover border border-gray-700"
+              />
+            </div>
+
+            <span class="text-xs text-gray-400 mt-1 block">
+              {{ new Date(c.createdAt).toLocaleString() }}
+            </span>
           </div>
         </li>
       </ul>
-
     </div>
   </div>
 </template>
-

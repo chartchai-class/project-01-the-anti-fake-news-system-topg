@@ -46,9 +46,9 @@ async function vote(isTrue: boolean) {
 <template>
   <div v-if="news">
     <h1>{{ news.topic }}</h1>
-    <p>Reported by {{ news.reporter }}</p>
+    <p>Reported by {{ news.reporterName }}</p>
     <p>{{ news.date }} @ {{ news.time }}</p>
-    <p>{{ news.short_detail }}</p>
+    <p>{{ news.shortDetail }}</p>
 
     <!-- Voting -->
     <div class="mt-4">

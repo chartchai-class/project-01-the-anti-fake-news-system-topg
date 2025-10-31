@@ -9,6 +9,14 @@ export interface Comment {
   images?: string[]
 }
 
+export interface User {
+  id: number
+  name: string
+  email?: string
+  username?: string
+  roles: string[]
+}
+
 export interface News {
   id: number
   topic: string

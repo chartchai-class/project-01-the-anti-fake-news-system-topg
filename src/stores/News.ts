@@ -3,7 +3,20 @@ import { defineStore } from 'pinia'
 
 export const useNewsStore = defineStore('news', {
   state: (): NewsState => ({
-    news: null,
+    news: {
+      id: 0,
+      topic: '',
+      shortDetail: '',
+      longDetail: '',
+      trueVotes: 0,
+      falseVotes: 0,
+      reporterName: '',
+      date: '',
+      time: '',
+      comments: [],
+      images: [],
+      hidden: false,
+    },
   }),
   actions: {
     setNews(news: News): void {
