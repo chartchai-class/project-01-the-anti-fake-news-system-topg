@@ -101,14 +101,34 @@ function handleDelete(newsId: number) {
         <!-- Add News button -->
         <RouterLink
           :to="{ name: 'add-news' }"
-          class="px-4 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
+          class="px-4 py-3 text-sm md:text-base bg-[rgb(28,28,30)] text-white rounded-lg hover:border-gray-400 border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
         >
           Add News
         </RouterLink>
       </span>
+
         <!-- Search bar -->
         <div class="w-64">
-          <BaseInput v-model="keyword" label="Search News" @input="fetchNews" />
+          <div class="relative">
+            <input
+              id="search"
+              type="text"
+              v-model="keyword"
+              @input="fetchNews"
+              placeholder="Type to search..."
+              class="w-full pl-3 pr-10 py-3 rounded-lg bg-[rgb(28,28,30)] text-gray-100 placeholder-gray-400 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+            />
+            <!-- Optional search icon -->
+            <svg
+              class="w-5 h-5 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z" />
+            </svg>
+          </div>
         </div>
 
         <!-- Divider -->
@@ -126,7 +146,7 @@ function handleDelete(newsId: number) {
                 query: { page: 1, size: selectedSize, status: selectedType },
               })
             "
-            class="border border-gray-600 rounded-lg px-3 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white hover:border-gray-400 transition shadow-sm"
+            class="border border-gray-600 rounded-lg  px-4 py-2 text-sm md:text-base bg-[rgb(28,28,30)] text-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
           >
             <option value="all">All news</option>
             <option value="True">True news</option>
@@ -145,7 +165,7 @@ function handleDelete(newsId: number) {
             id="size"
             v-model.number="selectedSize"
             @change="changeSize"
-            class="border border-gray-600 rounded-lg px-3 py-1.5 text-sm md:text-base bg-[rgb(28,28,30)] text-white hover:border-gray-400 transition shadow-sm"
+            class="border border-gray-600 rounded-lg px-4 py-2 text-sm md:text-base bg-[rgb(28,28,30)] text-white hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition shadow-sm"
           >
             <option :value="3">3</option>
             <option :value="6">6</option>
